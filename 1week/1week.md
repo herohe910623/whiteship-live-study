@@ -32,5 +32,5 @@ public class Hello {
     }
 }
 ```
->*Hello.java 소스 파일을 다음과 같이 컴파일*   
-    `C:/Temp>javac Hello.java`
+*Hello.java 소스 파일을 다음과 같이 컴파일   
+`C:/Temp>javac Hello.java`
