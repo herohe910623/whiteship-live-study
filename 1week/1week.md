@@ -24,7 +24,7 @@
  자바 프로그램을 개발하려면 다음과 같은 순서로 진행해야 한다.
 <img width="500" src="./IMG/IMG_002JVM.jpeg">
 
-1. *[Hello.java] 자바 소스 파일*
+*[Hello.java] 자바 소스 파일*
 ```
 public class Hello {
     public static void main(String[] args) {
@@ -32,14 +32,13 @@ public class Hello {
     }
 }
 ```
-2. *Hello.java 소스 파일을 다음과 같이 컴파일*   
+*Hello.java 소스 파일을 다음과 같이 컴파일*   
 ```
 C:/Temp>javac Hello.java
 ```   
 Hello.class가 생성되었는지 확인한다.   
-   
-3. *JVM 구동 명령어인 java.exe를 다음과 같이 입력*   
+*JVM 구동 명령어인 java.exe를 다음과 같이 입력*   
 ```
 C:/Temp>java Hello
 ```
-<img width="500" src="./IMG/IMG_003JVM.jpeg">   
+Hello, welcome to the java world! 가 출력되는 것을 볼수 있다.
