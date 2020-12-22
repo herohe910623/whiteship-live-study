@@ -37,8 +37,9 @@ public class Hello {
 C:/Temp>javac Hello.java
 ```   
 <img width="500" src="./IMG/IMG_003JVM.jpeg">
-Hello.class가 생성되었는지 확인한다.   
-## 실행하는 방법   
+Hello.class가 생성되었는지 확인한다.  
+ 
+## 실행하는 방법    
 *JVM 구동 명령어인 java.exe를 다음과 같이 입력*   
 ```
 C:/Temp>java Hello
