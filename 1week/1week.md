@@ -36,7 +36,7 @@ public class Hello {
 ```
 C:/Temp>javac Hello.java
 ```   
-<img width="500" src="./IMG/IMG_003JVM.jpeg">
+<img width="500" src="./IMG/IMG_003v2JVM.jpeg">
 Hello.class가 생성되었는지 확인한다.  
  
 ## 실행하는 방법    
@@ -44,5 +44,5 @@ Hello.class가 생성되었는지 확인한다.
 ```
 C:/Temp>java Hello
 ```
-<img width="500" src="./IMG/IMG_004JVM.jpeg">   
+<img width="500" src="./IMG/IMG_004v2JVM.jpeg">   
 Hello, welcome to the java world! 가 출력되는 것을 볼수 있다.
