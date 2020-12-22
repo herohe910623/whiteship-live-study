@@ -42,4 +42,4 @@ Hello.class가 생성되었는지 확인한다.
 ```
 C:/Temp>java Hello
 ```
-<img width="500" src="./IMG/IMG_003JVM.jpeg">
+<img width="500" src="./IMG/IMG_003JVM.jpeg">   
