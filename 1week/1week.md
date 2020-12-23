@@ -95,3 +95,16 @@ JVM이 사용자가 작성한 .java 소스 코드 파일을 운영체제에 실�
 8. Native Method Interface : 프로그래밍 프레임워크이다. JVM에서 실행 중인 Java 코드가 라이브러리 및 네이티브 애플리케이션으로 호출할 수 있다.   
 9. Native Method Libraries : 실행 엔진에 필요한 Native Libraries(C,C++)의 모음이다.   
 
+## JDK와 JRE의 차이   
+<img width="500" src="./IMG/IMG_008JVM.png">   
+
+### JDK(Java Development Kit)
+ * 자바개발도구
+ * JRE + 개발에 필요한 실행파일(javac.exe 등)
+
+### JRE(Java Runtime Environment) 
+ * 자바실행환경
+ * 자바로 작성된 응용프로그램이 실행하기 위한 최소환경
+ * JVM + 클래식 라이브러리(JAVA API)
+
+ 
