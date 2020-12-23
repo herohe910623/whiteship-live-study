@@ -77,7 +77,7 @@ JVM이 사용자가 작성한 .java 소스 코드 파일을 운영체제에 실�
   
 <img width="500" src="./IMG/IMG_006JVM.png">    
 참조 https://m.blog.naver.com/ki630808/221844888233   
-*JIT 컴파일러의 내부구조 (중간 단계인 IR Intermediate Representation 로 변환하여 최적화를 수행한다.)   
+* JIT 컴파일러의 내부구조 (중간 단계인 IR Intermediate Representation 로 변환하여 최적화를 수행한다.)   
 
 ## JVM 구성 요소
 <img width="500" src="./IMG/IMG_007JVM.png">
