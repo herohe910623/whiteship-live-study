@@ -80,3 +80,18 @@ JVM이 사용자가 작성한 .java 소스 코드 파일을 운영체제에 실�
 *JIT 컴파일러의 내부구조 (중간 단계인 IR Intermediate Representation 로 변환하여 최적화를 수행한다.)   
 
 ## JVM 구성 요소
+<img width="500" src="./IMG/IMG_007JVM.png">
+
+1. Class Loader : 클래스 로더는 클래스 파일을 로드하는데 사용되는 하위 시스템이다.   
+2. Method Area : 메타데이터, 상수 런타임 풀, 메서드에 대한 코드와 같은 클래스 구조를 저장한다.   
+3. Heap : 모든 개체, 관련 인스턴스 변수 및 배열은 힙에 저장된다.   
+4. JVM Language Stacks : 로컬 변수를 저장하고 부분적인 결과를 얻는다. 각 스레드에는 자체 JVM 스택이 있으며, 스레드가 생성될 때 동시에 생성된다.
+메서드를 호출할 때마다 새 프레임이 생성되고, 메서드 호출 프로세스가 완료되면 삭제된다.
+스택은 공유자원이 아니므로 Thread Safe (여러 스레드에서 공용 자원을 접근할 때 생길 수 있는 문제)하다.
+내부에는 Local Variable Array, Operand Stack, Frame Data 의 영역이 있다.   
+5. PC Register : PC 레지스터는 현재 실행 중인 Java 가상 시스템 명령의 주소를 저장한다. 자바에서는 각 스레드에 별도의 PC레지스터가 있다.   
+6. Native Method Stack : 네이티브 메서드 스택은 네이티브 라이브러리에 따라 네이티브 코드 명령을 보관한다. (자바 대신 다른 언어로 쓰여 있다)   
+7. Execution Engine : 런타임 데이터 영역에 할당 된 바이트코드는 실행 엔진에 의해 실행된다. 실행 엔진은 바이트코드를 읽고 조각 별로 실행한다.   
+8. Native Method Interface : 프로그래밍 프레임워크이다. JVM에서 실행 중인 Java 코드가 라이브러리 및 네이티브 애플리케이션으로 호출할 수 있다.   
+9. Native Method Libraries : 실행 엔진에 필요한 Native Libraries(C,C++)의 모음이다.   
+
