@@ -20,7 +20,7 @@ Java에서는 개발자가 프로그램 코드로 메모리를 명시적으로 �
 객체가 사라질 때 Major GC (혹은 Full GC)가 발생한다고 말한다. 
 
 영역별 데이터 흐름을 그림으로 살펴보면 다음과 같다. 
-GC001.png   
+<img width="500" src="./IMG/GC001.png">    
 * 참조 : https://d2.naver.com/helloworld/1329
 
 위 그림의 Permanent Generation 영역 (이하 Perm 영역)은 Method Area라고도 한다. 객체나 억류(intern)된 문자열 정보를 저장하는 곳이며, Old영역에서 살아남은 객체가 영원히 남아 있는 곳은 절대 아니다. 
@@ -30,7 +30,7 @@ GC001.png
 이러한 경우를 처리하기 위해서 Old영역에는 512바이트의 덩어리로 되어 있는 카드 테이블(card table)이 존재한다.
 
 카드 테이블에는 Old 영역에 있는 객체가 Young 영역의 객체를 참조할 때마다 정보가 표시된다. Young 영역의 GC를 실행할 때에는 Old 영역에 있는 모든 객체의 참조를 확인하지 않고, 이 카드 테이블만 뒤져서 GC 대상인지 식별한다.
-GC002.png   
+<img width="500" src="./IMG/GC002.png">    
 * 참조 : https://d2.naver.com/helloworld/1329
 
 카드 테이블은 write barrier를 사용하여 관리한다. write barrier는 Minor GC를 빠르게 할 수 있드록 하는 장치이다. write barrier 때문에 약간의 오버헤드는 발생하지만 전반적인 GC 시간은 줄어들게 된다.
@@ -52,7 +52,7 @@ Survivor 영역이 2개이기 때문에 총 3개의 영역으로 나뉘는 것�
  이 절차를 확인해 보면 알겠지만 Survivor 영역 중 하나는 반드시 비어 있는 상태로 남아 있어야 한다. 만약 두 Survivor 영역에 모두 데이터가 존재하거나, 두 영역 모두 사용량이 0 이라면 여러분의 시스템은 정상적인 상황이 아니라고 생각하면 된다.
 
  이렇게 Minor GC 를 통해서 Old 영역까지 데이터가 쌓인 것을 간단히 나타내면 다음과 같다. 
- GC003.png
+<img width="500" src="./IMG/GC003.png">    
  * 참조 : https://d2.naver.com/helloworld/1329
 
  참고로, HotSpot VM 에서는 보다 빠른 메모리 할당을 위해서 두 가지 기술을 사용한다. 하나는 bump-the-pointer라는 기술이며, 다른 하나는 TLABs(Thread-Local Allocation Buffers)라는 기술이다.
@@ -91,7 +91,7 @@ Paraller GC는 Serial GC와 기본적인 알고리즘은 같다. 그러나 Seria
 Parallel GC는 메모리가 충분하고 코어의 개수가 많을 때 유리하다. Parallel GC는 Throughput GC라고도 부른다.
 
 다음 그림은 Serial GC와 Parallel GC의 스레드를 비교한 그림이다.   
-GC004.png   
+<img width="500" src="./IMG/GC004.png">    
 * 참조 : https://d2.naver.com/helloworld/1329   
 
 ### Parallel Old GC(-XX:+UseParallelOldGC)   
@@ -100,7 +100,7 @@ Parallel Old GC는 JDK 5 update 6 부터 제공한 GC 방식이다. 앞서 설�
 
 ### CMS GC (-XX:+UseConcMarkSweepGC)   
 다음 그림은 Serial GC와 CMS GC의 절자를 비교한 그림이다. 그림에서 보듯이 CMS GC는 지금까지 설명한 GC 방식보다 더 복잡하다.
-GC005.png   
+<img width="500" src="./IMG/GC005.png">    
 * 참조 : https://d2.naver.com/helloworld/1329   
 
 초기 Initial Mark 단계에서는 클래스 로더에서 가장 가까운 객체 중 살아 있는 객체만 찾는 것으로 끝낸다. 따라서, 멈추는 시간은 매우 짧다. 그리고 Concurrent Mark 단계에서는 방금 살아있따고 확인한 객체에서 참조하고 있는 객체들을 따라가면서 확인한다. 
@@ -121,7 +121,7 @@ GC005.png
 
 다음 그림에서 보다시피, G1 GC는 바둑판의 각 영역에 객체를 할당하고 GC를 실행한다. 그러다가, 해당 영역이 꽉 차면 다른 영역에서 객체를 할당하고 GC를 실행한다. 
 즉, 지금까지 설명한 Young의 세가지 영역에서 데이터가 Old 영역으로 이동하는 단계가 사라진 GC 방식이라고 이해하면 된다. G1 GC는 장기적으로 말도 많고 탈도 많은 CMS GC 를 대체하기 위해서 만들어 졌다.   
-GC006.png
+<img width="500" src="./IMG/GC006.png">    
 * 참조 : https://d2.naver.com/helloworld/1329   
 
 G1 GC의 가장 큰 장점은 성능이다. 지금까지 설명한 어떤 GC 방식보다도 빠르다. 하지만, JDK 6에서는 G1 GC를 early access 라고 부르며 그냥 시험삼아 사용할 수만 있도록 한다. 그리고 JDK 7 에서 정식으로 G1 GC를 포함하여 제공한다.
