@@ -20,6 +20,7 @@ Java에서는 개발자가 프로그램 코드로 메모리를 명시적으로 �
 객체가 사라질 때 Major GC (혹은 Full GC)가 발생한다고 말한다. 
 
 영역별 데이터 흐름을 그림으로 살펴보면 다음과 같다. 
+
 <img width="500" src="./IMG/GC001.png">    
 * 참조 : https://d2.naver.com/helloworld/1329
 
