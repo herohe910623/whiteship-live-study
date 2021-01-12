@@ -53,7 +53,7 @@
 Most Significant Bit 의 줄임 말로 가장 왼쪽에 위치한 비트인 최상위 비트를 뜻한다. 
 
 8비트를 다음과 같이 표현할 수 있으면    
-<img width="300" src="./IMG/IMG_002type.png">
+<img width="300" src="./IMG/IMG_002type.png">   
 검게 색칠한 가장 왼쪽의 비트를 MSB 라고 부르고 부호 비트라고도 한다.
 이 값이 1이면 음수, 0이면 양수라고 판단한다.
 
