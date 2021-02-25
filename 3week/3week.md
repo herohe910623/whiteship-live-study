@@ -119,10 +119,12 @@
 타양한 곳에서 활용할 수 있지만, 보통 레퍼런스 타입 변수가 레퍼런스 데이터 타입으로 변환이 가능한지 확인하기 위해 사용한다.    
 타입 변환이 가능 하다는 것은 여러가지 내용을 내포할 수 있다.    
 
-'
+<pre>
+<code>   
 System.out.println("whiteship" instance of String) // true   
 System.out.println(null instanceof String) //false   
-'
+</code>
+</pre>
 
 ## assignment(=) operator   
 
@@ -136,7 +138,8 @@ System.out.println(null instanceof String) //false
  이것은 a = a + b; 
  즉, 자기 자신에 대해 연산한 결과를 다시 자기 자신에 담을 경우 사용한다.    
 
-'
+<pre>
+<code>   
 public Class Week3 {
     public static void main(String[] args) {
         int v1 = 10; 
@@ -144,10 +147,12 @@ public Class Week3 {
         System.out.println(v1);       // 30
     }
 }
-'
+</code>
+</pre>
 
 시프트 연산은 비트 이동 연산자로 말 그대로 비트를 이동하는 연산을 한다.   
-'
+<pre>
+<code>   
 public class week3 {
 
     public static void main(String[] args) {
@@ -169,7 +174,8 @@ public class week3 {
         System.out.println(v2); // 1
     }
 }
-'
+</code>
+</pre>
 
 >> 와 >>> 의 차이는, 오른쪽으로 비트 이동을 할 때 MSB값으로 채우느냐 무조건 0으로 채우느냐의 차이 이다.   
 >> 연산의 경우 MSB 값으로 부족한 비트를 채우고, >>> 연산은 MSB 상관없이 무조건 0으로 값을 채워준다.   
@@ -194,12 +200,15 @@ public class week3 {
 타입 :: 인스턴스 메소드 ( 임의 객체의 인스턴스 메소드 참조 )    
 타입 :: new ( 생성자 참조 )   
 
-'
+<pre>
+<code>   
 Runnable r = () -> {
     System.out.println("1");
 }
 // Runnable r = () -> System.out.println("1"); 으로 생략 가능
-'
+</code>
+</pre>
+
 
 ## 3항 연산자   
 
@@ -208,7 +217,8 @@ Runnable r = () -> {
 
 (조건) ? (조건이 참일 때 실행) : (조건이 거짓일 때 실행)    
 
-'
+<pre>
+<code>   
 public class week3 {
 
     public static void main(String[] args) {
@@ -218,7 +228,8 @@ public class week3 {
         System.out.println((v1>v2)? "true" : "false");
     }
 }
-'
+</code>
+</pre>
 
 ## 연산자 우선 순위    
 
@@ -234,7 +245,8 @@ public class week3 {
 
 자바13 부터 추가된 연산자로 일반적인 switch 문에서는 break로 리턴을 시켜줬지만, 자바13 부터는 yield 키워드를 이용해서 리턴하게 변경 되었다.   
 
-'''
+<pre>
+<code>   
 private static int getValueSwitchBreak(String mode) {
     int result = switch (mode) {
         case "a":
@@ -251,12 +263,14 @@ private static int getValueSwitchBreak(String mode) {
     };
     return result;
 }
-'''
+</code>
+</pre>
+
 
 위에 코드가 자바 13에서는 yield 가 사용되어 형태가 변경되었다.   
 
 <pre>
-<code>   
+<code>
 private static int getValueSwitchYield(String mode) {
     int result = switch (mode) {
         case "a" , "b":
