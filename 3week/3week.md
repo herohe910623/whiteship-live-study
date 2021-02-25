@@ -177,3 +177,98 @@ public class week3 {
 
 ## 화살표(->) 연산자    
 
+ Java 8 에서 람다가 도입 되면서 등장한 연사자 이다.    
+ (인자 리스트) -> {바디}   
+ 인자 리스트가 없을때 : ()    
+ 인자가 한개일 때 : (one) 또는 one   
+ 인자가 여러개 일때 : (one, two)   
+ 인자의 타입은 생략 가능, 컴파일러가 추론(infer) 하지만 명시할 수도 있다.(integer one, integer two)   
+
+ 바디는 화살표 오른쪽에 함수 본문을 정의한다.   
+ 여러줄인 경우에 {} 를 사용하여 묶는다.   
+ 한 줄인 경우에 생략 가능, return 도 생략 가능하다.   
+
+람다가 하는 일이 기존 메소드 또는 생성자를 호출하는 것이라면, 메소드 레퍼런스를 사용하여 매우 간결하게 표현할 수 있다.   
+타입 :: 스태틱 메소드 ( 스태틱 메소드 참조 )    
+객체 레퍼런스 :: 인스턴스 메소드 ( 특정 객체의 인스턴스 메소드 참조 )   
+타입 :: 인스턴스 메소드 ( 임의 객체의 인스턴스 메소드 참조 )    
+타입 :: new ( 생성자 참조 )   
+
+'
+Runnable r = () -> {
+    System.out.println("1");
+}
+// Runnable r = () -> System.out.println("1"); 으로 생략 가능
+'
+
+## 3항 연산자   
+
+3항 연산자는 항이 3개라 3항 연산자다.     
+물음표와 콜론을 사용하며, 기본적인 생김새는 다음과 같다.   
+
+(조건) ? (조건이 참일 때 실행) : (조건이 거짓일 때 실행)    
+
+'
+public class week3 {
+
+    public static void main(String[] args) {
+
+        int v1 = 10;
+        int v2 = 5;
+        System.out.println((v1>v2)? "true" : "false");
+    }
+}
+'
+
+## 연산자 우선 순위    
+
+수학에서도 그렇지만 모든 연산에는 우선순위가 있다.    
+
+<img width="500" src="./IMG/IMG_014oper.jpeg">    
+
+자주 사용하는 연산은 굳이 외우지 않아도 익숙해진다. 그리고 사실 전부 외우는 것이 불가능하지 않지만 쉽지도 않다.   
+그래서 괄호를 적극적으로 사용하면 좋다.
+가독성이 좋은 연산 문장을 작성 하도록 하자.   
+
+## (optional) Java 13. switch operator    
+
+자바13 부터 추가된 연산자로 일반적인 switch 문에서는 break로 리턴을 시켜줬지만, 자바13 부터는 yield 키워드를 이용해서 리턴하게 변경 되었다.   
+
+'
+private static int getValueSwitchBreak(String mode) {
+    int result = switch (mode) {
+        case "a":
+        case "b":
+            break 1;
+        case "c":
+            break 2;
+        case "d":
+        case "e":
+        case "f":
+            break 3;
+        default:
+            break -1;            
+    };
+    return result;
+}
+'
+
+위에 코드가 자바 13에서는 yield 가 사용되어 형태가 변경되었다.   
+
+'
+private static int getValueSwitchYield(String mode) {
+    int result = switch (mode) {
+        case "a" , "b":
+            yield 1;
+        case "c":
+            yield 2;
+        case "d","e","f":
+            //do something here...
+            System.out.println("Supports multi line block!");
+            yield 3;
+        default:
+            yield =1;
+    };
+    return result;
+}
+'
