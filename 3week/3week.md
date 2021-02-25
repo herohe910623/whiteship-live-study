@@ -255,7 +255,8 @@ private static int getValueSwitchBreak(String mode) {
 
 위에 코드가 자바 13에서는 yield 가 사용되어 형태가 변경되었다.   
 
-'''   
+<pre>
+<code>   
 private static int getValueSwitchYield(String mode) {
     int result = switch (mode) {
         case "a" , "b":
@@ -271,4 +272,5 @@ private static int getValueSwitchYield(String mode) {
     };
     return result;
 }
-'''   
+</code>
+</pre>
