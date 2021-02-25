@@ -234,7 +234,7 @@ public class week3 {
 
 자바13 부터 추가된 연산자로 일반적인 switch 문에서는 break로 리턴을 시켜줬지만, 자바13 부터는 yield 키워드를 이용해서 리턴하게 변경 되었다.   
 
-'
+'''
 private static int getValueSwitchBreak(String mode) {
     int result = switch (mode) {
         case "a":
@@ -251,11 +251,11 @@ private static int getValueSwitchBreak(String mode) {
     };
     return result;
 }
-'
+'''
 
 위에 코드가 자바 13에서는 yield 가 사용되어 형태가 변경되었다.   
 
-'
+'''
 private static int getValueSwitchYield(String mode) {
     int result = switch (mode) {
         case "a" , "b":
@@ -271,4 +271,4 @@ private static int getValueSwitchYield(String mode) {
     };
     return result;
 }
-'
+'''
