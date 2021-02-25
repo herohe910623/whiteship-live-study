@@ -18,7 +18,7 @@
 피연산자 (operand) : 연산의 대상이 되는 데이터
 연산식 (expressions) : 연산자와 피연산자로 연산의 과정을 기술한 것
 
-<img width="500" src="./IMG/IMG_001oper.jpeg">
+<img width="500" src="./IMG/IMG_001oper.png">
 
 - - -
 
@@ -37,16 +37,16 @@
 타입 프로모션은 원본 데이터의 데이터 타입 표현 변위를 모두 표현할 수 있는 데이터 타입으로 만들어진 변수에 값을 넣을 때 발생한다.   
 
 
- <img width="500" src="./IMG/IMG_002oper.jpeg">
- <img width="500" src="./IMG/IMG_003oper.jpeg">  
+ <img width="500" src="./IMG/IMG_002oper.png">
+ <img width="500" src="./IMG/IMG_003oper.png">  
 
 예시로 작성한 코드에서 보면 알수 있듯이 정수형 자료형을 사용해서 연산을 했기 때문에 정수 표현 범위 내에서만 결과를 만들어 낼 수 있다.   
 그래서 나눗셈과 나머지 연산을 보면, 정확히 그 몫과 나머지를 정수형으로 자동 변환 되어 결과를 출력한 것을 알 수 있다. 
 
 실수형 자료형으로 사용하면 다음과 같이 나온다. 
 
- <img width="500" src="./IMG/IMG_004oper.jpeg">
- <img width="500" src="./IMG/IMG_005oper.jpeg"> 
+ <img width="500" src="./IMG/IMG_004oper.png">
+ <img width="500" src="./IMG/IMG_005oper.png"> 
 실수 표현 범위를 가질 수 있기 때문에 소수점 아래 값도 계산되어 나오는 것을 볼 수 있다. 
 
 ## 비트 연산자
@@ -64,21 +64,21 @@
 
  각 비트 연산에 대한 진리표는 다음과 같다. 
 
- <img width="300" src="./IMG/IMG_006oper.jpeg">    
+ <img width="300" src="./IMG/IMG_006oper.png">    
  비트를 반전 시킨다. 
 
- <img width="300" src="./IMG/IMG_007oper.jpeg">    
+ <img width="300" src="./IMG/IMG_007oper.png">    
  둘 다 참(1)인 경우 참(1)을 반환한다.
 
- <img width="300" src="./IMG/IMG_008oper.jpeg">    
+ <img width="300" src="./IMG/IMG_008oper.png">    
  하나라도 참(1)인 경우 참(1)을 반환 한다.
 
- <img width="300" src="./IMG/IMG_009oper.jpeg">    
+ <img width="300" src="./IMG/IMG_009oper.png">    
  서로 다른 경우 참(1)을 반환 한다.   
 
  숫자에 대해 비트 연산을 하면 어떻게 되는지 예시를 살펴보자. 
 
- <img width="500" src="./IMG/IMG_010oper.jpeg">  
+ <img width="500" src="./IMG/IMG_010oper.png">  
 
 ## 관계 연산자    
 
@@ -87,9 +87,9 @@
  종류는 다음과 같다.   
 == , != , > , < , >= , <= , instatnce of   
 
-<img width="500" src="./IMG/IMG_011oper.jpeg">  
+<img width="500" src="./IMG/IMG_011oper.png">  
 
-<img width="500" src="./IMG/IMG_012oper.jpeg">  
+<img width="500" src="./IMG/IMG_012oper.png">  
 
 
 ## 논리 연산자    
@@ -101,7 +101,7 @@
  즉, &&는 양쪽 피연산자 모두 true 일 때 true를 반환하고 그 외의 경우는 false를 반환한다.    
  || 는 양쪽 피연산자 중 하나라도 true 이면 true를 반환하고 그 외의 경우는 flase를 반환한다.   
 
- <img width="500" src="./IMG/IMG_013oper.jpeg"> 
+ <img width="500" src="./IMG/IMG_013oper.png"> 
 
  그렇다면 & 와 && 그리고 | 과 || 는 무엇이 다른걸까?    
  && 첫번째 조건이 참이 아니면 두번째 조건을 확인하지 않는다.   
@@ -235,7 +235,7 @@ public class week3 {
 
 수학에서도 그렇지만 모든 연산에는 우선순위가 있다.    
 
-<img width="500" src="./IMG/IMG_014oper.jpeg">    
+<img width="500" src="./IMG/IMG_014oper.png">    
 
 자주 사용하는 연산은 굳이 외우지 않아도 익숙해진다. 그리고 사실 전부 외우는 것이 불가능하지 않지만 쉽지도 않다.   
 그래서 괄호를 적극적으로 사용하면 좋다.
