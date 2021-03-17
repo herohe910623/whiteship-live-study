@@ -877,9 +877,14 @@ public class LinkedNodeQueue implements Queue {
     }
 }
 
-LinkedNodeQueueTest
+
 </code>
 </pre>
+
+LinkedNodeQueueTest   
+<pre>
+<code>
+
 package datastructure.queue;
 
 import org.junit.jupiter.api.*;
@@ -927,3 +932,6 @@ public class LinkedNodeQueueTest {
             }); 
     }
 }
+
+</code>
+</pre>
