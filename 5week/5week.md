@@ -14,7 +14,7 @@
 * BinaryTree라는 클래스를 정의하고 주어진 노드를 기준으로 출력하는 bfs(Node node)와 dfs(Node node) 메소드를 구현하세요.   
 * DFS는 왼쪽, 루트, 오른쪽 순으로 순회하세요.   
 
-==========
+----------
 
 ### Class   
 
@@ -24,8 +24,8 @@ Class 는 각 instance 를 만들기위한 청사진 혹은 프로토타입 이�
 ### Class 선언   
 
 Class 는 다음과 같이 선언할 수 있다.    
-'''java
+```java
 public class ClassExample {
     // 생성자, 필드, 메서드 등등
 }
-'''
+```
