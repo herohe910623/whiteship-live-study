@@ -27,7 +27,7 @@
 예를 들어 String 클래스의 패키지는 java.lang 이먀 FQCN 은 java.lang.String 이 된다.   
 
 패키지 구조 사진
-<img width="500" src="./IMG/IMG_001package.png">    
+<img width="500" src="./IMG/IMG_001package.jpg">    
 
 대부분의 패키지 이름 지정 규칙    
 |패키지 시작이름|내용|
@@ -115,7 +115,6 @@ JVM이 (누가) 프로그램을 실행할 때(언제), 클래스파일을 찾는
 즉, JVM은 CLASSPATH의 경로를 확인하여 라이브러리 클래스들의 위치를 참조하게 된다. 그러나 J2JDK 버전부터는 /jre/lib/ext 폴더에 필요한 클래스 라이브러리들을 복사해 놓으면 
 사용가능하여 특별한 경우가 아니면 설정을 하지 않는다.
 
-JVM 구성 이미지 넣기
 <img width="500" src="./IMG/IMG_002package.png">    
 소스코드(.java로 끝나는 파일)를 컴파일하면 소스코드가 "바이트코드"로 변환된다.    
 java runtime(java 또는 jre)으로 이 .class 파일에 포함된 명령을 실행하려면, 이 파일을 찾을 수 있어야 한다.   
@@ -157,3 +156,4 @@ Hello.java 파일이 C:/Java 디렉토리에 존재하고, 필요한 클래스 �
 |protected|O|O|O|X|
 |public|O|O|O|O|   
 
+<img width="500" src="./IMG/IMG_003package.png"> 
