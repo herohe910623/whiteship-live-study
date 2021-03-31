@@ -26,7 +26,6 @@
 
 예를 들어 String 클래스의 패키지는 java.lang 이먀 FQCN 은 java.lang.String 이 된다.   
 
-패키지 구조 사진
 <img width="500" src="./IMG/IMG_001package.jpg">    
 
 대부분의 패키지 이름 지정 규칙    
