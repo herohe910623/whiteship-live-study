@@ -1,4 +1,4 @@
-## 과제 6 : 패키지   
+## 과제 7 : 패키지   
 
 ### 목표 : 자바의 패키지에 대해 학습하세요.    
 
@@ -55,6 +55,9 @@ public class Main {
 ```
 
 ### Import 키워드    
+import 키워드는 다른 패키지에 있는 클래스나 인터페이스 등을 참조할 때 사용한다.   
+동일 패키지나 클래스나 java.lang 패키지의 클래스는 imprt 구문 없이 참조 가능하다.   
+이때 규칙은 FQCN 을 입력해야 한다.   
 
 ```
 import 패키지명.클래스명   
@@ -67,4 +70,90 @@ import 를 하지 않아도 되는 패키지의 경우는
 1. java.lang 패키지    
 2. 같은 패키지   
 
+```java
+package me.whiteship.livestudy.week7.model;         // 클래스의 패키지 
+
+import me.whiteship.livestudy.week7.ExampleClass;   // 타 패키지 클래스 임포트
+import me.whiteship.livestudy.week7.SampleClass;    // 타 패키지 클래스 임포트  
+
+public class Week7Medel {
+    ExampleClass example = new ExampleClass();
+    SampleClass sample = new SampleClass();
+}
+```
+만약 한 패키지의 여러 클래스를 import 한다면 * 를 사용하여 가능하다. 하지만 추천하지 않는다.   
+```java
+package me.whiteship.livestudy.week7.model;
+
+import me.whiteship.livestudy.week7.*;          // week7 패키지 모든 클래스 참조 가능 
+
+public class Week7Medel {
+    ExampleClass example = new ExampleClass();
+    SampleClass sample = new SampleClass();
+}
+```
+또한 정적(static) 멤버도 import 가능하다.   
+```java 
+pacakge me.whiteship.livestudy.week7.model;
+
+import static java.lang.System.out;             // static 임포트
+
+public class Week7Model {
+    public void print() {
+        out.print("println");
+        out.print("print");
+    }
+}
+```
+
+### 클래스패스 (ClassPath)    
+클래스패스는 JVM 혹은 Java 컴파일러가 사용하는 파라미터인데 클래스나 패키지를 찾을 때 기준이 되는 경로를 말한다.   
+즉, java 명령을 통해 클래스 파일을 실행할 때 클래스 파일을 찾는 기준이 되는 경로를 클래스패스라고 하며 기본적으로 java 명령을 실행하는 위치를 의미 한다.   
+
+클래스를 찾기위한 경로   
+JVM이 (누가) 프로그램을 실행할 때(언제), 클래스파일을 찾는 데(왜) 클래스패스(기준이 되는 파일 경호)(무엇을)를 사용한다.   
+즉, JVM은 CLASSPATH의 경로를 확인하여 라이브러리 클래스들의 위치를 참조하게 된다. 그러나 J2JDK 버전부터는 /jre/lib/ext 폴더에 필요한 클래스 라이브러리들을 복사해 놓으면 
+사용가능하여 특별한 경우가 아니면 설정을 하지 않는다.
+
+JVM 구성 이미지 넣기
+<img width="500" src="./IMG/IMG_002package.png">    
+소스코드(.java로 끝나는 파일)를 컴파일하면 소스코드가 "바이트코드"로 변환된다.    
+java runtime(java 또는 jre)으로 이 .class 파일에 포함된 명령을 실행하려면, 이 파일을 찾을 수 있어야 한다.   
+class 파일을 찾을 때, classpath에 지정된 경로를 사용한다.   
+
+classpath는 .class 파일이 포함된 디렉토리와 파일을 콜론(;)으로 구분한 목록이다.   
+이 classpath 를 지정하기 위한 두 가지 방법이 있다.   
+* CLASSPATH 환경변수 사용   
+* java runtime에 -classpath 옵션 사용   
+
+### CLASSPATH 환경변수   
+위에서 설명한 클래스패스를 환경 변수를 통해 설정할 수 있다.   
+```CLASSPATH =.;C:Program Files/Java/jdk-11.0.1/lib/tools.jar ```   
+컴퓨터 시스템 변수 설정을 통해 지정할 수 있다.   
+JVM이 시작될 때 JVM의 클래스 로더는 이 환경 변수를 호출한다. 그래서 환경 변수에 설정되어 있는 디렉토리가 호출되면 그 디렉토리에 있는 클래스들을 먼저 JVM에 로드한다.   
+그러므로 CLASSPATH 환경 변수에는 필수 클래스들이 위치한 디렉토리를 등록하도록 한다.   
+
+### -classpath 옵션    
+``` javac<options> <source files> ```   
+컴파일러가 컴파일 하기 위해서 필요로 하는 참조할 클래스 파일들을 찾기 위해서 컴파일시 파일 경로를 지정해주는 명령어 이다.   
+Hello.java 파일이 C:/Java 디렉토리에 존재하고, 필요한 클래스 파일들이 C:/Java/Fileclasses 에 위치한다면,   
+```javac -classpath C:/Java/Fileclasses C:/Java/Hello.java ``` 로 해주면 된다.   
+
+만약 참조할 클래스 파일들이 그 외의 다른 디렉토리, 그리고 현 디렉토리에도 존재한다면,   
+``` javac -classpath.;C:/Java/Fileclasses;C:/Java/Otherclasses C:/Java/Hello.java ```    
+과 같이 ; 으로 구분해줄 수 있다. (. 은 현 디렉토리 , .. 은 현 디렉토리에서 상위 디렉토리를 의미 한다. )   
+
+### 접근지시자 (Access Modifier)   
+접근 지시자는 멤버 변수나 메소드들의 접근 범위를 정의하기 위해 사용 한다.   
+* public : 접근을 제한하지 않아 어디서든 접근이 가능하다.   
+* private : 클래스 내부에서만 접근을 허용 한다.   
+* protected : 클래스 내부, 동일 패키지, 상속받은 클래스에서만 접근을 허용 한다.   
+* default(명시X) : 클래스 내부와 동일 패키지에서만 접근이 가능 하다.   
+
+|지시자|클래스 내부|동일 패키지|상속받은 클래스|이외|
+|---|---|---|---|---|
+|private|O|X|X|X|
+|default|O|O|X|X|
+|protected|O|O|O|X|
+|public|O|O|O|O|   
 
