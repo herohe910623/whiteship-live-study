@@ -240,7 +240,7 @@ public class App {
 ```
 
 #### 다중 인터페이스 구현 클래스    
-<img width="500" src="./IMG/IMG_002package.png">    
+<img width="500" src="./IMG/IMG_002interface.png">    
 개체는 다수의 인터페이스 타입으로 사용할 수 있다.   
 
 인터페이스 A와 인터페이스 B가 객체의 메서드를 호출할 수 있으려면, 객체는 이 두 인터페이스를 모두 구현해야 한다.    
@@ -325,7 +325,7 @@ public class SmartTv implements RemoteControl, Searchable {
 
 그러나 상위 인터페이스에 있는 메서드 중에서 메서드 명과 파라미터 형식은 같지만 리턴 타입이 다른 메서드가 있다면, 
 둘중 어떤 것을 상속받느냐에 따라 규칙이 달라지기 때문에 다중 상속이 불가능하다.   
-<img width="500" src="./IMG/IMG_003package.png">    
+<img width="500" src="./IMG/IMG_003interface.png">    
 위와 같은 구조에서 A와 B2를 확장하는 인터페이스 C2를 만들려고 할 때 에러가 난다.   
 
 #### 그렇다면 두개의 인터페이스를 구현하는 경우 메서드 시그니쳐가 같은 케이스에서는 어떻게 할까?   
