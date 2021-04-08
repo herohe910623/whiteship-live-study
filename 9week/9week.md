@@ -40,10 +40,12 @@
     * Runtime Exception 를 제외한 모든 예외   
     * IOException   
     * SQLException 지금은 없다.   
+
 -> Runtime Exception    
 >   >특징   
     * 예외가 발생할 것을 미리 감지하지 못했을 때 발생.   
     * 런타임 예외에 해당하는 모든 예외들은 Runtime Exception을 확장한 예외들이다.   
+    
 -> 모든 예외의 부모 크래스는 java.lang.Throwable 클래스    
 >   >특징   
     * Exception과 Error 클래스는 Throwable 클래스를 상속받아 처리하도록 되어 있다.   
