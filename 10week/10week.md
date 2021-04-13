@@ -144,7 +144,7 @@ This is RunnalbeSample's run() method.
 #### Thread sleep 메서드   
 sleep 메서드는 주어진 시간 만큼 대기를 하게 된다.   
 |리턴 타입|메서드 이름 및 매개 변수|설명|
-|----|----|----|
+|-----|-----|--------|
 |static void|sleep(long millis)|매개 변수로 넘어온 시간(1/1000초)만큼 대기한다.|
 |static void|sleep(long millis,int nanos)|첫 번째 매개변수로 넘어온 시간(1/1000초)+두번째 매개 변수로 넘어온 시간 (1/1,000,000,000초)만큼 대기한다.|
 
