@@ -697,16 +697,88 @@ Final value is 20000
 * get()   
     - 현재 값을 반환   
 * set(newValue)   
-    newValue 로 값을 업데이트 한다.   
+    - newValue 로 값을 업데이트 한다.   
 * getAndSet(newValue)   
-    원자적으로 값을 업데이트하고 원래의 값을 반환한다.   
+    - 원자적으로 값을 업데이트하고 원래의 값을 반환한다.   
 * CompareAndSet(expect, update)   
-    현재 값이 예상하는 값 (=expect) 과 동일하다면 값을 update 한 후 true 를 반환한다. 예상하는 값과 같지 않다면 update는 생략하고 false를 반환   
+    - 현재 값이 예상하는 값 (=expect) 과 동일하다면 값을 update 한 후 true 를 반환한다. 예상하는 값과 같지 않다면 update는 생략하고 false를 반환   
 * Number 타입의 경우 값의 연산을 할 수 있도록 addAndGet(delta), getAndAdd(delta), getAndDecrement(), getAndIncrement(), incrementAndGet() 등의 메서드를 추가로 제공   
 <img width="500" src="./IMG/IMG_006thread.png">     
 
+#### Compare-And-Swap(CAS) 란?   
+* 메모리 위치의 내용을 주어진 값과 비교하고 동일한 경우에만 해당 메모리 위치의 내용을 새로 주어진 값으로 수정을 한다.   
+* 즉, 현재 주어진 값(=현재 쓰레드에서의 데이터)과 실제 데이터와 저장된 데이터를 비교해서 두 개가 일치할 때만 값을 업데이트 한다. 이 역할을 하는 메서드가 compareAndSet() 이다. 즉, synchronized 처럼 임계영역에 같은 시점에 두개 이상의 쓰레드가 접근하려 하면 쓰레드 자체를 blocking 시키는 메커니즘이 아니다. AtomicInteger의 연산 메서드들이 어떻게 구현된건지 코드를 타고 들어가다 보면 이렇게 유사한 형식으로 do-while 문이 쓰이는 것을 볼 수 있다.   
+<img width="500" src="./IMG/IMG_007thread.png">     
 
+#### Atomic 예제   
+```java 
+public class AtomicTypeSample {
+    public static void main(String[] args) {
+        AtomicLong atomicLong = new AtomicLong();
+        AtomicLong atomicLong1 = new AtomicLong(123);
+        long expectedValue = 123; 
+        ling newValue = 234;
 
+        System.out.println(atomicLong.compareAndSet(expectedValue, newValue));
+
+        atomicLong1.set(234);
+
+        System.out.printlon(atomicLong1.compareAndSet(234,newValue));
+
+        System.out.println(atomicLong1.compareAndSet(expectedValue,newValue);
+
+        System.out.println(atomicLong.get());
+
+        System.out.println(atomicLong1.get());
+    }
+}
+```
+결과   
+```java 
+false 
+true 
+false 
+0
+234
+```
+
+#### Volatile   
+* volatile keyword 는 Java 변수를 Main Memory 에 저장하겠다 라는 것을 명시하는 것이다.   
+* 매번 변수의 값을 Read 할 때마다 CPU cache 에 저장된 값이 아닌 Main Memory 에서 읽는 것이다.   
+* 또한 변수의 값을 Write 할 때마다 Main Memory 에 까지 작성하는 것이다.   
+<img width="500" src="./IMG/IMG_008thread.png">     
+
+* volatile 변수를 사용하고 있지 않는 MultiThread 애플리케이션은 작업을 수행하는 동안 성능 향상을 위해서 Main Memory에서 읽은 변수를 CPU Cache 에 저장하게 된다.   
+* 만약 Multi Thread 환경에서 Thread 가 변수 값을 읽어올 때 각각의 CPU Cache에 저장된 값이 다르기 때문에 변수 값 불일치 문제가 발생하게 된다.   
+
+예제    
+* SharedObject를 공유하는 두 개의 Thread 가 있다.   
+    - Thread-1 는 counter 값을 더하고 읽는 연산을 한다.( Read & Write)   
+    - Thread-2 는 counter 값을 읽기만 한다.(Only Read)   
+```java 
+public class SharedObject {
+    public int counter = 0;
+}
+```
+
+* Thread-1만 counter 변수를 증가시키지만 CPU Cache 에만 반영되어 있고 실제로 Main Memory 에는 반영이 되지 않았다. 그렇기 때문에 Thread-2 는 count 값을 계속 읽어오지만 0을 가져오는 문제가 발생한다.   
+<img width="500" src="./IMG/IMG_009thread.png">     
+다른 쓰레드에 의해 아직 Main Memory에 다시 기록되지 않았기 때문에 Thread 가 변수의 최신 값을 보지 못하는 문제를 "가시성" 문제라고 한다. 한 쓰레드의 업데이트는 다른 Thread 에 표시 되지 않는다.   
+
+#### 어떻게 해결을 하는지?    
+* volatile 키워드를 추가하게 되면 Main Memory 에 저장하고 읽어오기 때문에 변수 값 불일치 문제를 해결 할 수 있다.   
+```java 
+public class SharedObject {
+    public volatile int counter = 0;
+}
+```
+
+#### 언제 사용하는지?   
+* Multi Thread 환경에서 하나의 Thread 만 read & Write 하고 나머지 Thread 가 read 하는 상황에서 가장 최신의 값을 보장한다.   
+
+#### volatile 성능에 영향?   
+* volatile 는 변수의 read와 write 를 Main Memory 에서 진행하게 된다.   
+* CPU Cache 보다 Main Memory 가 비용이 더 크기 때문에 변수 값 일치를 보장해야 하는 경우에 volatile 을 사용하는 것이 좋다.   
 
 
 
