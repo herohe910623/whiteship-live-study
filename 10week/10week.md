@@ -695,7 +695,7 @@ Final value is 20000
 
 #### 주요 메서드   
 * get()   
-    현재 값을 반환   
+    - 현재 값을 반환   
 * set(newValue)   
     newValue 로 값을 업데이트 한다.   
 * getAndSet(newValue)   
@@ -703,6 +703,8 @@ Final value is 20000
 * CompareAndSet(expect, update)   
     현재 값이 예상하는 값 (=expect) 과 동일하다면 값을 update 한 후 true 를 반환한다. 예상하는 값과 같지 않다면 update는 생략하고 false를 반환   
 * Number 타입의 경우 값의 연산을 할 수 있도록 addAndGet(delta), getAndAdd(delta), getAndDecrement(), getAndIncrement(), incrementAndGet() 등의 메서드를 추가로 제공   
+<img width="500" src="./IMG/IMG_006thread.png">     
+
 
 
 
