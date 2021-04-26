@@ -216,7 +216,7 @@ thread state(after join)=TERMINATED
 
 #### Thread 상태확인 메서드   
 |리턴타입|메서드 이름 및 매개변수|설명|
-|---|---|------|
+|----|----|------|
 |void|checkAccess()|현재 수행중인 쓰레드가 해당 쓰레드를 수정할 수 있는 권한이 있는지를 확인한다.만약 권한이 없다면 SecurityException이라는 예외를 발생|
 |boolean|isAlive()|쓰레드가 살아 있는지를 확인한다. 해당 쓰레드의 run() 메서드가 종료되었는지 안 되었는지를 확인|
 |boolean|isInterrupted()|run()메서드가 정상적으로 종료되지 않고,interrupt() 메서드의 호출을 통해서 종료되었는지를 확인하는데 사용|
