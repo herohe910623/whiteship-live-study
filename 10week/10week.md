@@ -224,7 +224,7 @@ thread state(after join)=TERMINATED
 
 #### Thread static 메서드 목록   
 |리턴타입|메서드 이름 및 매개변수|설명
-|---|---|------|
+|----|----|------|
 |static int|activeCount()|현재 쓰레드가 속한 쓰레드 그룹의 쓰레드 중 살아 있는 쓰레드의 개수를 리턴|
 |static Thread|currentThread()|현재 수행중인 쓰레드의 객체를 리턴|
 |static void|dumpStack()|콘솔 창에 현재 쓰레드의 스택 정보를 출력|
