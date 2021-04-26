@@ -780,6 +780,309 @@ public class SharedObject {
 * volatile 는 변수의 read와 write 를 Main Memory 에서 진행하게 된다.   
 * CPU Cache 보다 Main Memory 가 비용이 더 크기 때문에 변수 값 일치를 보장해야 하는 경우에 volatile 을 사용하는 것이 좋다.   
 
+### 데드락 (교착상태, Deadlock)    
+Thread Deadlock   
+* Deadlcok(교착상태) 란, 둘 이상의 쓰레드가 lock 을 획득하기 위해 대기하는데, 이 lock 을 잡고 있는 쓰레듣들도 똑같이 다른 lock을 기다리면서 서로 block 상태에 놓이는 것을 말한다. Deadlock은 다수의 쓰레드가 같은 lock을 동시에, 다른 명령에 의해 획득하려 할 때 발생할 수 있다.   
+* 예를 들어, Thread-1이 A의 lock 을 가지고 있는 상태에서 B 의 lock을 획득하려 한다. 그리고 Thread-2 는 B의 lock 을 가진 상태에서 A의 lock을 획득하려 한다. 데드락이 생긴다. Thread-1 은 절대 B의 lock을 얻을 수 없고 마찬가지로 Thread-2는 절대 A 의 lock 을 얻을 수 없다. 두 쓰레드 중 어느 쪽도 이 사실유무를 모르며, 쓰레드들은 각 개체 A 와 B 에서 영원히 차단된 상태로 유지 된다. 이를 데드락(교착상태) 이라고 한다.   
+```java 
+Thread-1 locks A, waits for B 
+Thread-2 locks B, waits for A 
+```
+
+에제     
+```java 
+public class DeadlockSample {
+    public static final Object LOCK_1 = new Object();
+    pulbic static final Object LOCK_2 = new Object();
+
+    public static void main(String[] args) {
+        ThreadSample1 thread1 = new ThreadSample1();
+        ThreadSample2 thread2 = new ThreadSample2();
+        thread1.start();
+        thread2.start();
+    }
+
+    private static class ThreadSample1 extends Thread {
+        public void run() {
+            synchronized (LOCK_1) {
+                System.out.println("Thread 1 : Holding lock 1...");
+                try {
+                    Thread.sleep(10);
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Thread 1 : Wating for lock 2...");
+
+                synchronized (LOCK_2) {
+                    System.out.println("Thread 1 : Holding lock 1 & 2...");
+                }
+             }
+        }
+    }
+
+    private static class ThreadSample2 extends Thread {
+        public void run() {
+            synchronized (LOCK_2) {
+                System.out.println("Thread 2 : Holding lock 2...");
+                try {
+                    Thread.sleep(10);
+                }cathch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Thread 2 : Waiting for lock 1...");
+
+                synchronized (LCOK_1) {
+                    System.out.println("Thread 2 : Holding lock 1 & 2...");
+                }
+            }
+        }
+    }
+}
+```
+결과   
+```java 
+Thread 1 : Holding lock 1...
+Thread 2 : Holding lock 2...
+Thread 1 : Waiting for lock 2...
+Thread 2 : Waiting for lock 1...
+```
+내부에서 서로의 lock을 얻으려고 호출하기 때문에 무한정 락 대기 데드락에 빠지게 된다.   
+
+### 번외    
+### Lock 클래스와 Synchronized 키워드의 차이   
+
+#### java.util.concurrent   
+* java 5 에서 추가된 패키지로 동기화가 필요한 상황에서 사용할 수 있는 유틸리티 클래스들을 제공한다.   
+
+#### 주요 기능   
+Locks   
+* 상호 배제를 사용할 수 있는 클래스를 제공   
+Atomic   
+* 동기화 되어있는 변수를 제공한다.   
+* Atomic은 java.util.concurrent 에 포함된다.    
+Executors   
+* 쓰레드 풀 생성, 생명주기 관리, Task 등록과 실행 등을 간편하게 처리 가능   
+Queue   
+* Thread-safe 한 FIFO Queue 를 제공    
+synchronizers    
+* 특수한 목적의 동기화를 처리하는 5개의 클래스를 제공   
+    - Somaphore, CountDownLatch, CyclicBarrier, Phaser, Exchanger   
+        - 간략하게 Semaphore 는 동시에 접근이 가능한 쓰레드의 개수를 지정하여 설정이 가능하다.   
+
+#### java.util.concurrent.locks   
+* synchronized 블록을 사용했을 때와 동일한 메커니즘으로 동작한다.   
+* 내부적으로 synchronized 를 사용하여 구현되어 있고, synchronized 를 더욱 유연하고 세밀하게 처리하기 위해 사용하는 것이며 대체하는 목적은 아니다.   
+
+#### Interface   
+* Lock   
+    - 공유 자원에 한번에 한 쓰레드만 read, write 를 수행 가능하도록 한다.   
+* ReadWriteLock   
+    - Lock 에서 한단계 발전된 메커니즘을 제공하는 인터페이스 이다. 공유 자원에 여러개의 쓰레드가 read를 수행할 수 있지만, write는 한번에 한 쓰레드만 수행이 가능하다.   
+* Condition(Spring 의 Condition이 아님)   
+    - Object 클래스의 monitor method 인 wait, notify, notifyAll 메서드를 대체한다. wait -> await, notify -> signal, notifyAll -> signalAll 로 생각하면 된다.   
+
+#### Locks Interface 의 구현체   
+* lock()   
+    - Lock 인스턴스에 점금을 걸어둔다. Lock 인스턴스가 이미 잠겨있는 상태라면, 잠금을 걸어둔 쓰레드가 unlock()을 호출할 때까지 실행이 비활성화 된다.   
+* lockInterruptibly()   
+    - 현재 쓰레드가 interrupted 상태가 아닐 때 Lock 인스턴스에 잠금을 건다. 현재 쓰레드가 interrupted 상태면 InterruptedException를 발생시킨다.   
+* tryLock()   
+    - 즉시 Lock 인스턴스에 잠금을 시도하고 성공 여부를 boolean 타입으로 반환한다.   
+    - tryLock(long timeout, TimeUnit timeUnit)
+* unlock()   
+    - Lock 인스턴스의 잠금을 해제한다.   
+* newCondition()   
+    - 현재 Lock 인스턴스와 연결된 Condition 객체를 반환한다.   
+
+
+#### Lock 미적용 예제    
+여러 쓰레드가 동일한 자원을 공유할 때 벌어지는 일을 확인하기 위한 간단한 예제를 만들어보자.   
+SharedData 는 모든 쓰레드가 공유할 데이터를 정의한 클래스 이다.   
+여러개의 쓰레드가 하나의 SharedData 인스턴스를 공유하며 increase() 메서드를 호출 할 것이다.   
+
+SharedData   
+```java 
+public class SharedData {
+    private int value;   
+
+    public void increase() {
+        value += 1;
+    }
+
+    public void print() {
+        System.out.println(value);
+    }
+}
+```
+LockSample   
+```java 
+public class LockSample {
+    public static void main(String[] args) {
+        final SharedData sharedData = new SharedData();
+
+        for(int i = 0 ; i<10 ; i++) {
+            new Thread(new RunnableSample(SharedData)).start();
+        }
+    }
+}
+
+class RunnalbeSample implements Runnable {
+    private final SharedData sharedData;
+
+    public RunnableSample(SharedData sharedData) {
+        this.sharedData = sharedData;
+    }
+
+    @Override 
+    public void run() {
+        for(int i = 0 ; i<100 ; i++) {
+            sharedData.increase();
+        }
+
+        sharedData.print();
+    }
+}
+```
+결과 (컴퓨터 성능에 따라 다르다.)   
+```java 
+101
+300
+401
+494
+594
+200
+694
+894
+794
+994
+```
+
+TestData 객체를 공유하는 10개의 쓰레드가 run() 블록에 정의된 작업을 시분할 방식으로 번갈아가며 실행하고 있다. 이로인해 실행 결과는 매번 조금씩 달라져 동일한 결과가 보장되지 않는다. 만약 개발자가 value가 순차적으로 100씩 증가하는 상황을 의도했다면 
+이는 잘못된 동작에 해당된다.    
+이제 Lock 인스턴스를 사용해 이러한 동시성 문제를 해결할 수 있다.   
+쓰레드들이 공유할 Lock 인스턴스를 만들고, 동기화가 필요한 실행문의 앞 뒤로 lock(), unlock() 을 호출하면 된다.   
+이 때 lock()을 걸어놨다면 unlock()도 빼먹지 말고 반드시 호출해줘야 한다. 임계 영역 블록의 실행이 끝나더라도 unlock()이 호출되기 전까지는 쓰레드의 잠금 상태가 영원히 유지되기 떄문이다. 
+어떤 예외가 발생하더라도 반드시 unlock()이 호출되도록 try-catch-finally 형태를 사용하는 것이 권장된다.   
+#### Lock 적용 예제   
+```java 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class LockSample {
+    public static void main(String[] args) {
+        final SharedData sharedData = new SharedData();
+        final Lock lock = new ReentrantLock();
+
+        for(int i = 0; i< 10; i++) {
+            new Thread(new LockRunnableSample(sharedData, lock)).start();
+        }
+    }
+}
+class LockRunnalbeSample implements Runnable {
+    private final SharedData sharedData;
+    private final Lock lock;
+
+    public LockRunnableSample(SharedData mySharedData, Lock lock) {
+        this.sharedData = mySharedData;
+        this.lock = lock;
+    }
+
+    @Override
+    public void run() {
+        lock.lock();
+        try {
+            for (int i=0 ; i<100; i++) {
+                sharedData.increase();
+            }
+            sharedData.print();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+    }
+}
+```
+실행해보면 값이 순차적으로 100씩 증가하는 것을 알 수 있다.   
+```java 
+// 실행결과 
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+```
+
+#### synchronized 와 Lock 은 어떤 차이가 있는 것일까?   
+이 두 예제는 synchronized 로 대체가 가능하지만 이 둘을 구분짓는 키워드는 fairness(공정성) 이다.   
+
+* 공정성   
+    - 모든 쓰레드가 자신의 작업을 수행할 기회를 공평하게 갖는 것   
+공정한 방법에선 Queue 안에서 쓰레드들이 무조건 순서를 지켜가며 lock 을 확보한다. 불공정한 방법에선 만약 특정 쓰레드에 lock 이 필요한 순간 release 가 발생하면 대기열을 건너뛰는 새치기 같은 일이 벌어지게 된다.   
+다른 쓰레드들에게 우선순위가 밀려 자원을 계속해서 할당받지 못하는 쓰레드가 존재하는 상황을 starvation(기아 상태)라 부른다. 이러한 기아 상태를 해결하기 위해 공정서이 필요하다.   
+synchronized 는 공정성을 지원하지 않는다. 즉 후순위인 쓰레드는 실행이 안될 수 있다.   
+ReentrantLock 은 생성자의 인자를 통해서 Fair/NonFair 설정을 할 수 있다. ReentrantLock 의 생성자는 아래와 같이 정의되어 있다.   
+```java 
+public ReentrantLock() {
+    sync = new NonfairSync();
+}
+
+public ReentrantLock(boolean fair) {
+    sync = fair ? new FairSync() : new NonfairSync();
+}
+```
+공정한 lock 을 사용할 경우 경쟁이 발생했을 때 가장 오랫동안 기다린 쓰레드에게 lock을 제공한다. 락을 요청하는 시간 간격이 긴 경우가 아니라면, 쓰레드를 공정하게 관리하는 것보다 불공정하게 관리할 때 성능이 더 우수하다. 
+그래서 일반적으로는 불공정 방식이 사용되는 것 같다.   
+
+### 정리    
+synchronized 는 블록구조를 사용하고 메서드 안에 임계 영역의 시작과 끝이 있다. Lock 은 lock(), unlock() 으로 시작과 끝을 명시하기 때문에 임계 영역을 여러 메서드에서 나눠서 작성이 가능하다.   
+synchronized는 Lock 과 같이 따로 unlock을 안하고 구문만 작성하여 코드를 간결하게 할 수 있다.   
+
+### 번외    
+### ConcurrentHashMap   
+* ConcurrentHashMap 은 HashMap을 Thread-safe 하도록 만든 클래스이다.   
+* HashMap 은 key, value 에 null 이 가능하지만 ConcurrentHashMap은 null을 허용하지 않는다.   
+* HashMap 과 비교했을때 ConcurrentHashMap 은 Thread-Safe 하지만 높은 성능을 보장하는 HashMap 이다. 왜 Thread-Safe 한데 높은 성능을 보장하는가는 아래에서 알아보자.   
+* Hashtable도 Thread-Safe 를 보장한다. 차이점으로는 모든 작업이 Thread-Safe 하지만 검색작업(get) 에는 Lock 이 적용되지 않고 전체 테이블을 잠구는 것 또한 없다.   
+* ConcurrentHashMap 의 검색 작업(get)은 Lock이 이루어지지 않으며 갱신 작업(put,remove등) 과 동시에 수행이 가능하다.   
+* Hashtable 의 put, get 내부 코드를 보면 아래와 같이 synchronized 가 걸려있다.   
+
+#### Hashtable   
+
+Hashtable.put()   
+<img width="500" src="./IMG/IMG_010thread.png">    
+
+Hashtable.get()
+<img width="500" src="./IMG/IMG_011thread.png">    
+
+* 이렇게 메서드에 synchronized 를 걸어서 lock 대상이 객체 자신인 this 여서 Hashtable 은 Thread-Safe 하지만 성능이 안좋다.   
+* ConcurrentHashMap 의 검색은 검색 method 가 실행되는 시점에 가장 최근에 완료된 갱신 작업의 결과를 반영하게 된다.   
+
+#### HashMap   
+
+HashMap.put()   
+
+putVal()   
+<img width="500" src="./IMG/IMG_012thread.png">    
+* HashMap 의 put() 은 putVal() 를 실행한다. 이것이 HashMap 의 put 과정의 코드이다.   
+
+#### ConcurrentHashMap   
+
+ConcurrentHashMap 의 내부 코드    
+<img width="500" src="./IMG/IMG_013thread.png">    
+<img width="500" src="./IMG/IMG_014thread.png">    
+* synchronized(f) 부분이 핵심이다.   
+    - lock 단위가 f = Node 이다.   
+    - ConcurrentHashMap 은 Node 별 즉 세그먼트 별로 lock 을 걸게 된다. 이것을 lock Striping 기법이라고 부른다.    
+    - 기본적으로 ConcurrentHashMap 은 기본적으로 16개의 세그먼트로 나뉘어져 있고 세그먼트 별로 lock 을 걸어서 동기화 되도록 한 것이다.   
+
+
+
 
 
 출처 : https://sujl95.tistory.com/63
