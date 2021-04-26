@@ -1057,7 +1057,7 @@ synchronized는 Lock 과 같이 따로 unlock을 안하고 구문만 작성하�
 Hashtable.put()   
 <img width="500" src="./IMG/IMG_010thread.png">    
 
-Hashtable.get()
+Hashtable.get()   
 <img width="500" src="./IMG/IMG_011thread.png">    
 
 * 이렇게 메서드에 synchronized 를 걸어서 lock 대상이 객체 자신인 this 여서 Hashtable 은 Thread-Safe 하지만 성능이 안좋다.   
