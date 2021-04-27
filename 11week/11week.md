@@ -624,9 +624,141 @@ enumSet2 -> [FEB,MAR,APR,MAY]
 
     - 매개변수로 받은 요소를 포함하는 열거형 집합을 만든다. 이 메서드의 오버로딩은 1~5개의 요소가 있는 enum set 집합을 초기화하기 위해 존재한다. 가변인자 기능을 사용하는 여섯번째 오버로딩 메서드도 있다.   
     하지만 가변인자를 사용하면 느리게 실행될 수 있으므로 1~5 개의 요소만 초기화 하는 것이라면 이 메서드를 사용하는 것이 좋다.   
-    
+
+* @SafeVarargs   
+  public static <E extends Enum<E>> EnumSet<E> of(E firt, E... rest)   
+    - 가변인자 기능을 사용하는 of 메서드의 여섯번째 오버로딩 이다. 가변인자를 사용하지 않는 of 메서드 보다 느리게 실행될 수 있다.   
+
+* public static <E extends Enum<E>> EnumSet<E> range(E from, E to)   
+    - 매개변수 from 과 to 의 범위의 모든 요소를 포함하는 enum set 을 만든다. 반환된 set 에는 to 까지 포함된다.   
+    (from 과 to 는 열거형 상수를 의미한다.)   
+
+```java 
+import java.util.EnumSet;
+
+public class Example {
+    public static void main(String[] args) {
+        EnumSet<Month> enumSet1 = EnumSet.allOf(Month.class);
+        EnumSet<Month> enumSet2 = EnumSet.range(Month.FEB, Month.APR);
+
+        for(Month month : enumSet1) {
+            System.out.print(month + " ");
+        }
+
+        System.out.println();
+
+        for(Month month : enumSet2) {
+            System.out.print(month + " ");
+        }
+    }
+}
+
+enum Month {
+    JAN, FEB, MAR, APR, MAY
+}
+```
+
+```
+> Task : Example.main()
+EnumSet.allOf : JAN FEB MAR APR MAY
+EnumSet.range : FEB MAR APR   
+```
+실행 결과   
+
+#### EnumSet 에 new 연산자를 사용하지 않는 이유   
+EnumSet 은 다른 컬렉션들과 달리 new 연산자를 사용할 수 없다.   
+정적 팩토리 메서드 (static factory method) 만으로 EnumSet의 구현 객체를 반환받을 수 있다.   
+```
+// Month 의 열거형을 다룰 수 있는 Enum set 을 반환 
+EnumSet enumSet1 = EnumSet.noneOf(Month.class);
+
+// Month 의 모든 열거형 상수를 가지고 있는 enum set 을 반환 
+EnumSet enumSet2 = EnumSet.allOf(Month.class);
+```
+
+<img width="500" src="./IMG/IMG_006enum.png">      
+EsumSet 클래스는 추상 클래스 였다.   
+
+EsumSet 의 내부를 보면 abstract 클래스이기 때문에 객체로써 생성 및 사용이 불가능하다.   
+<img width="500" src="./IMG/IMG_007enum.png">      
+EnumSet 클래스의 noneOf() 메서드   
+
+EnumSet 클래스의 noneOf() 메서드를 보면 내부적으로 EnumSet 을 상속받은 RegularEnumSet 과 JumboEnumSet 을 생성해서 반환해주고 있다. 
+(상속받은 두개의 클래스 역시 생성자가 public 하지 않아서 사용자가 임의로 생성자를 호출 할 수 없는 구조이다. -> 메서드를 통해서만 객체를 반환받을 수 있다.)   
+
+#### EnumSet 은 왜 생성자를 사용자가 호출할 수 없게 만들었을 까?   
+
+* 사용자 편의성 1- 사용자는 어떤 구현객체가 적합한지 몰라도 상관없다.   
+    - RegularEnumSet 은 원소의 개수가 적을 때 적합하고, JumboEnumSet 은 원소의 개수가 많을 때 적합 하지만, 이는 EnumSet의 구현체들은 모두 알고 있는 사용자가 아니라면 복잡한 선택지가 될 수 있다. 
+    하지만 EnumSet 을 가장 잘 알고있는 EnumSet을 개발한 개발자가 구현 객체를 반환해 준다면 EnumSet을 사용하는 입장에서는 어떤 구현체가 적합한지 고려하지 않아도 된다.   
+
+* 사용자 편의성 2- 사용자는 빈번하게 EnumSet 초기화 과정을 간단히 진행할 수 있다.   
+    - EnumSet 이 다루는 Enum 의 모든 원소들을 Set에 담는 행위는 빈번하게 수행될 것으로 예상되는 일이다. 이러한 경우를 대비해서 EnumSet의 allOf() 라는 메서드를 사용하면 
+    모든 Enum 요소가 담겨있는 EnumSet을 쉽게 반환받고 사용할 수 있다.   
+
+* EnumSet 의 확장성과 유지보수의 이점   
+    - EnumSet 을 유지보수하는 과정에서 RegularEnumSet 과 jumboEnumSet 이외에 다른 경우를 대비하는 구현클래스가 추가 된다고 하여도 내부에 감추어져 있기 때문에, EnumSet을 사용하던 기존의 코드에는 전혀 영향이 없다. 
+    심지어 RegularEnumSet 이 삭제된다 하더라도 사용자에게 영향이 없다. 이는 EnumSet 의 확장성의 큰 이점으로 작용할 수 있다.   
 
 
+### EnumMap   
+
+enum Type 키와 함께 사용하기 위한 특수한 Map 구현체 이다. enum map의 모든 키는 map 이 생성될 때 명시적으로 또는 암시적으로 지정된 단일 열거형 타입에서 가져와야 한다. 
+enum map 은 내부적으로 배열로 표시된다. EnumMap 은 매우 간결하고 효율적 이다.   
+
+enum map은 열거형 상수가 선언된 순서로 키의 순서가 유지된다. 이는 컬렉션 뷰 (keySet(), entrySet(), values()) 의 반환값에도 반영된다.   
+
+Null 요소는 허용되지 않는다. null 요소를 삽입하려고 하면 NullPointException 이 발생한다.   
+하지만 null 요소가 있는지 테스트하거나 제거하려는 시도는 제대로 동작한다.   
+
+대부분의 컬렉션 구현과 마찬가지로 EnumMap 은 동기화되지 않는다. 여러 쓰레드가 동시에 enum map 에 접근하고 쓰레드 중 하나 이상이 map 을 수정하는 경우 외부에서 동기화 해야 한다. 
+일반적으로 enum map 을 자연스럽게 캡슐화하는 일부 객체에서 동기화하여 수행 된다. 이러한 객체가 없으면 Collections.synchronizedMap(Map<K,V>) 메서드를 사용하여 맵을 "래핑" 해야한다. 
+이는 실수로 동기화 되지 않은 접근을 방지하기 위해 생성시 가장 최선의 방법 이다.   
+
+```
+Map<EnumKey, V> m = Collections.synchronizedMap<new EnumMap<EnumKey, V> (...));
+```
+
+#### EnumMap 의 생성자    
+
+* public EnumMap(Class<K> keyType)    
+    - 매개변수로 받은 keyType 을 사용하는 EnumMap 을 만든다.   
+* public EnumMap(EnumMap<K, ? extends V> m)   
+    - 매개변수로 받은 요소와 동일한 매핑을 가지는 EnumMap 을 만든다.   
+* public EnumMap(Map<K, ? extends V> m)   
+    - 매개변수로 받은 Map 요소에서 초기화 된 enum map 을 만든다. 지정된 EnumMap의 인스턴스인 경우 생성자는 EnumMap(EnumMap <K, extends V> m) 과 동일하게 작동한다. 
+    그렇지 않으면 지정된 맵에 하나 이상의 매핑이 포함되어 있어야 한다. (새 enum map 의 키 타입을 확인하기 위해)    
+    매개변수가 EnumMap 이 아니고 매핑이 하나도 없다면 IllegalArgumentException 을 발생 시킨다.   
+
+#### EnumMap 의 메서드   
+* public int size()    
+    - 이 EnumMap 의 키-값 매핑 수를 반환한다.   
+* public boolean containsValue(Object value)   
+    - EnumMap 이 value 값을 매핑한 키가 존재한다면 (하나 이상이라면) true 를 반환한다.   
+* public boolean containsKey(Object key)   
+    - EnumMap 에 매개변수의 key 가 존재한다면 true 를 반환한다.   
+* public V get(Object key)   
+    - key 에 매핑되는 값을 반환하거나 Map 에 key 가 없을 경우 null 을 반환한다.   
+    즉 이 Map 에 키 k에서 값 v 로의 매핑이 포함되어 있으면 (key == k), 이 메서드는 v 를 반환한다.   
+    그렇지 않으면 null 을 반환한다.   
+
+    반환값이 null 이라고 해서 반드시 Map 에 반드시 Map 에 key 에 대한 매핑이 포함되어 있지 않음을 나타내는 것은 아니다. 
+    명시적으로 key 를 null로 매핑할 수도 있다. containsKey 연산을 사용하여 이 두 경우를 구분할 수 있다.   
+
+* public V put(K key,V value)   
+    - key 와 value 를 매핑하여 EnumMap 에 넣는다. 만약 이미 동일한 key 값을 가지고 있다면 해당 value 값으로 덮어쓴다.   
+* public V remove(Object key)   
+    - key 가 존재하는 경우 Map 에서 key 를 삭제하고 key 에 맹핑되어 있던 value 를 반환한다.   
+* public void putAll(Map<? extends K,? extends V> m)   
+    - 매개변수 m 에 있는 모든 요소들을 이 Map 에 삽입한다. 이미 존재하는 key 라면 새로운 값으로 대체된다.   
+* public void clear()   
+    - 이 Map 에 모든 매핑을 삭제한다.   
+* public Set<K> keySet()   
+    - 이 Map 에 포함된 키의 Set 뷰를 반환한다. Set 의 interator 는 자연순서(열거형 상수가 선언된 순서) 로 키를 반환한다.   
+* public Collections<V> valuse()   
+    - 이 Map 에 포함된 값의 Collection 뷰를 반환한다. Collection 의 iterator 는 해당 key 가 map 에 나타나는 순서대로 값을 반환한다. 이는 자연스러운 순서( 열거형 상수가 선언된 순서) 이다.    
+* public Set<Map.Entry<K,V> entrySet()   
+    - 이 Map 에 포함된 매핑의 Set 뷰를 반환한다. 반환된 집합은 Map.keySet() 에 설명된 일반 계약을 따른다. Set 의 iterator 는 해당 키가 맵에 나타나는 순서대로 매핑을 반환한다. 이는 자연스러운 순서(열거형 상수가 선언된 순서) 이다.   
 
 
 출처 : https://parkadd.tistory.com/50
