@@ -601,8 +601,30 @@ EnumSet 클래스에는 생성자가 존재하지 않는다. 존재하지 않은
     (지정된 Collection 이 EnumSet 인스턴스인 경우 copyOf(EnumSet<E> s) 와 동일하게 작동한다.)   
     - 그렇지 않다면 지정된 Collection에 하나 이상의 요소가 있어야 한다.   
     (새 enum set 의 요소 타입을 결정하기 위해)   
+* public static <E extends Enum<E>> EnumSet<E> complementOf(EnumSet<E> s)    
+    - 매개 변수의 EnumSet<E> s 에 포함되어 있지 않은 요소들을 포함하는 (차집합) enum set을 만든다.   
+```
+enum Month {JAN, FEB, MAR, APR, MAY}   
 
+EnumSet<Month> enumSet1 = EnumSet.of(Month.JAN);
 
+EnumSet<Month> enumSet2 = EnumSet.complementof(enumSet1);
+
+=========== 결과 ===========
+enumSet1 -> [JAN]
+enumSet2 -> [FEB,MAR,APR,MAY]
+===========================
+```
+
+* public static <E extends Enum<E>> EnumSet<E> of(E e1)   
+  public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2)   
+  public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3)   
+  public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3, E e4)      
+  public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3, E e4, E e5)      
+
+    - 매개변수로 받은 요소를 포함하는 열거형 집합을 만든다. 이 메서드의 오버로딩은 1~5개의 요소가 있는 enum set 집합을 초기화하기 위해 존재한다. 가변인자 기능을 사용하는 여섯번째 오버로딩 메서드도 있다.   
+    하지만 가변인자를 사용하면 느리게 실행될 수 있으므로 1~5 개의 요소만 초기화 하는 것이라면 이 메서드를 사용하는 것이 좋다.   
+    
 
 
 
