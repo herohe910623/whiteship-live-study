@@ -553,6 +553,55 @@ protected Enum(String name, int ordinal) : 유일한 생성자로 프로그래�
 java.util.Enum 클래스에 정의된 메서드   
 * compareTo(E o) : ordinal 을 기준으로 지정된 객체와 비교한다. 크면 양수 작으면 음수 같으면 0을 반환 한다.   
 * equals(Object other) : 지정된 객체(other)가 열거형 상수와 같으면 true 를 반환 한다.   
+* finalize() : 해당 Enum 클래스가 final 메서드를 가질 수 없게 한다.   
+* getDeclaring() : 열거형 상수의 열거형 타입에 해당하는 Class 객체를 반환한다.   
+* hashCode() : 열거형 상수의 해시 코드를 반환한다.   
+* name() : 열거형 상수의 이름을 반환한다.   
+* ordinal() : 이 열거형 상수가 정의된 순서를 반환한다.   
+* toString() : 열거형 상수의 이름을 반환한다. (재정의 해서 개발자에게 더욱 친근하게 사용할 수 있다.)    
+* valueOf(Class<T> enumType, String name) :   
+
+
+### EnumSet   
+
+열거형 타입과 함께 사용하기 위한 특별한 Set 구현체 이다.   
+
+enum set의 모든 요소는 set을 만들 때 명시적으로 또는 암묵적으로 지정된 단일 열거형 타입에서 가져와야 한다.   
+enum set은 내부적으로 비트 벡터 (Bit Vector) 로 표현한다. 비트 벡터를 사용하면 메모리 사용을 크게 주일 수 있다. 
+EnumSet 을 구현할 때 공간 및 시간 성능은 기존 int 기반 "비트 플래그(bit flag)"의 대안으로 사용할 수 있을 만큼 고수준 이어야 한다. 
+대량작업( 예를들어 : containAll 및 preserveAll) 도 인수가 enum set 인 경우 매우 빠르게 실행되어야 한다.   
+
+iterator 메서드에 의해 반환된 iterator 는 자연순서 (열거형 상수가 선언된 순서)로 요소를 순회한다.   
+
+Null 요소는 허용되지 않는다. null 요소를 삽입하려고 하면 NullPointException 이 발생한다.   
+하지만 null 요소가 있는지 테스트하거나 제거하려는 시도는 제대로 동작한다.   
+
+대부분의 Collection 구현과 마찬가지로 EnumSet은 동기화 되지 않는다. 여러 쓰레드가 동시에 enum set에 접근하고 적어도 하나의 쓰레드가 집합을 수정하는 경우 외부적으로 동기화되어야 한다. 
+이것은 일반적으로 enum set을 자연스럽게 캡슐화 하는 일부 객체에서 동기화하여 수행된다.   
+이러한 개체가 없으면 Collections.synchronizedSet(Set<T>) 메서드를 사용하여 set 을 "래핑" 해야한다.   
+이것은 실수로 동기화 되지 않은 접근을 방지하기 위해 생성시 최선의 행동 이다.   
+아래와 같이 사용할 수 있다.   
+```
+Set<MyEnum> set
+=Collections.synchronizedSet(EnumSet.noneOf(MyEnum.class));
+```
+
+#### EnumSet 의 생성자   
+EnumSet 클래스에는 생성자가 존재하지 않는다. 존재하지 않은 이유는 이 목록의 가장 아래에서 다루겠다.   
+
+#### EnumSet 의 메서드   
+* public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> elementType)      
+    - 매개변수로 받은 요소 타입을 사용하여 비어있는 enum set을 생성한다.   
+* public static <E extends Enum<E>> EnumSet<E> allOf(Class<E> elementType)   
+    - 매개변수로 받은 타입의 모든 요소(열거형 상수들)를 포함하는 enum set을 만든다.   
+* public static <E extends Enum<E>> EnumSet<E> copyOf(EnumSet<E> s)   
+    - 매개변수로 받은 EnumSet과 동일한 타입을 사용하여 동일한 요소를 포함하는 enum set을 만든다.   
+* public static <E extends Enum<E>> EnumSet<E> copyOf(Collection<E> c)   
+    - 매개변수로 받은 Collection 으로 초기화 된 enum set을 만든다.   
+    (지정된 Collection 이 EnumSet 인스턴스인 경우 copyOf(EnumSet<E> s) 와 동일하게 작동한다.)   
+    - 그렇지 않다면 지정된 Collection에 하나 이상의 요소가 있어야 한다.   
+    (새 enum set 의 요소 타입을 결정하기 위해)   
+
 
 
 
