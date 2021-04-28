@@ -601,7 +601,105 @@ public abstract class AbstractProcessor implements Processor {
     - 애노테이션 프로세서에서 애노테이션에 대한 처리를 함   
     - 자바 컴파일러가 모든 애노테이션 프로세서가 실행 되었는지 검사 (실행되지 않았다면 반복한다)   
 
+### 애노테이션 프로세서 3   
 
+애노테이션 프로세서를 한번 만들어 보겠습니다.   
+<img width="500" src="./IMG/IMG_010annotation.png">   
+먼저 해당 구조로 프로젝트를 하나 생성해줍니다. 생성해야할 파일은 패키지와 자바 파일, 그리고 META-INF/services 폴더와 
+javax.annotation.processing.Processor 텍스트파일 입니다.   
+
+해당 구조를 만든 뒤 javax.annotation.processign.Processor 파일에 다음 코드를 작성해줍니다.   
+```java
+sample.processor.AnnotationProcessor
+```
+해당 파일에는 단순하게 FQCN (Full Qualified Class Name) 을 넣어주면 됩니다.   
+```java 
+package sample.processor;
+
+import java.util.Set;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic.Kind;
+
+@SupportedAnnotationTypes("*")
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
+public class AnnotationProcessor extends AbstractProcessor {
+	@Override
+	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        Messager messager = super.processingEnv.getMessager();
+        messager.printMessage(Kind.NOTE, "Hello Annotation Processor!!");
+		return true;
+	}
+}
+```
+다음으로 AnnotationProcessor.java 에 해당 코드를 넣어줍니다.   
+이렇게 까지 코드를 작성하고 나면 AnnotationProcessor 프로젝트의 구성은 모두 끝이납니다. 이제 이 프로젝트를 export를 통해 jar 파일로 뽑아내도록 합니다.   
+<img width="500" src="./IMG/IMG_011annotation.png">   
+하단의 jar 파일 이름과 경로를 지정해준 뒤 finish 를 눌러줍니다.   
+그러면 아래와 같은 jar 파일이 해당경로에 생기게 될겁니다.   
+<img width="100" src="./IMG/IMG_012annotation.png">   
+이제 이 jar파일을 놔두고 다시 이클립스로 돌아가서 하나의 프로젝트를 더 만들어 줍니다.   
+<img width="500" src="./IMG/IMG_013annotation.png">    
+
+```java 
+package com.test;
+
+public class AnnotationTest {
+    @Override 
+    public String toString() {
+        return super.toString();
+    }
+}
+```
+이 jar 파일을 사용할 프로젝트로 간단하게 자바파일 하나만 생성해준 뒤에 위 코드를 넣어줍니다.   
+이제 코드도 만들었으니 이 프로젝트의 Annotation Processing 을 설정해보도록 하겠습니다.   
+<img width="500" src="./IMG/IMG_014annotation.png">    
+먼저 프로젝트 우측클릭 > properties > java Compiler > Annotation Processing 을 클릭해줍니다.   
+<img width="500" src="./IMG/IMG_015annotation.png">    
+그리고 상단에 있는 Enable project specific settings 와 Enable processing in editor 에 체크를 넣어줍니다.   
+<img width="500" src="./IMG/IMG_016annotation.png">    
+다음으로 Annotation Processing 하단에 있는 Factory Path를 누른 뒤 Enable Project specific settings 를 클릭한 뒤 아까 만든 jar 파일을 
+Add External JARs 를 통해 추가해줍니다.   
+
+이제 해당설정을 적용한 뒤에 AnnotationClient 프로젝트에서 만든 java를 다시 저장하게 되면 Error Log View 에 다음과 같은 문구가 찍히는 것을 확인할 수 있습니다.   
+<img width="500" src="./IMG/IMG_017annotation.png">   
+
+컴파일 단계에서 우리가 만들었던 process() 함수의 내용이 찍히는 것을 확인할 수 있습니다.   
+
+이 예제에서는 단순하게 특정문자를 print 하였지만 이 방법과 위에서 했던 리플렉션 방법을 이용하면 컴파일 단계에서 애노테이션을 읽고 작업을 처리하는 것이 가능해집니다.   
+
+### Abstract Annotation   
+
+위처럼 Annotation Processor 를 만들기 위해서는 Abstract Annotation 을 상속받는다.   
+
+그럼 지금부터 상속 받은 Abstract Annotation 에 대해서 알아보자.   
+
+#### Abstract Annotation 에서 제공하는 함수들이다.   
+* synchronized void init(ProcessingEnvironment env)    
+    - 모든 annotation processor 는 empty constructor 를 반드시 갖는다.   
+    그러나 init 을 따로 갖고 있으며, ProcessingEnvironment 를 param 으로 받는다.   
+    ProcessingEnvironment 는 Elements, Types, Filer 와 같은 util class 를 제공한다.   
+
+* boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env)   
+    - processor 의 main 함수라고 보면 된다.   
+    annotation 에 대한 scanning, evaluation, processing 을 수행하고 java file 을 만들어낸다.   
+    RoundEnvironment 를 통해서 특정 annotation 을 query 할 수 있다.   
+
+* Set<String> getSupportedAnnotationTypes()   
+    - 해당 annotation processor 가 어떤 type 에 대해 처리할 것인지 등록할 수 있다.   
+    return 되는 Set 안의 String 은 fully qualified name 이다.   
+
+* SourceVersion getSupportedSourceVersion()   
+    - 어떤 Java version 을 이용할지를 명시한다.   
+    보통 SourceVersion.latestSupported() 를 return 한다.   
+    특정 상황에서 SourceVersion.RELEASE_6 과 같이 특정 버전을 return 할 수도 있다.   
+    그러나 역시 latestSupported 를 호출해서 return 하는 것이 권장된다.   
 
 
 출처 : https://velog.io/@kwj1270/어노테이션   
