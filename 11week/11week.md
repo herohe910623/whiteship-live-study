@@ -700,6 +700,54 @@ EnumSet 클래스의 noneOf() 메서드를 보면 내부적으로 EnumSet 을 �
     - EnumSet 을 유지보수하는 과정에서 RegularEnumSet 과 jumboEnumSet 이외에 다른 경우를 대비하는 구현클래스가 추가 된다고 하여도 내부에 감추어져 있기 때문에, EnumSet을 사용하던 기존의 코드에는 전혀 영향이 없다. 
     심지어 RegularEnumSet 이 삭제된다 하더라도 사용자에게 영향이 없다. 이는 EnumSet 의 확장성의 큰 이점으로 작용할 수 있다.   
 
+```java
+import java.util.EnumSet;
+
+enum Day {
+    SUNDAY, MONDAY, TUSEDAY, WEDNESDAY, FRIDAY, SATURDAY
+}
+
+public class Main {
+    public static void main(String[] args) {
+        EnumSet<Day> enumSet = EnumSet.allOf(Day.class);
+
+        // 전체 복사 
+        EnumSet<Day> enumSet2 = EnumSet.copyOf(enumSet);    // clone 
+        System.out.println(enumSet2);
+
+        // EnumSet 의 내용물을 비워라  
+        eunmSet = EnumSet.noneOf(Day.class);
+        System.out.println(enumSet);
+
+        // EunmSet 에서 매개변수로 들어온 2개의 열거형을 새로운 EnumSet 으로 반환해라
+        enumSet = EnumSet.of(Day.FRIDAY, Day.WEDNESDAY);
+        System.out.println(enumSet);
+
+        // 매개변수로 들어온 EnumSet 을 제외한 열거형으로 새로운 EnumSet 반환해라 
+        enumSet = EnumSet.complementOf(enumSet);
+        System.out.println(enumSet);
+
+        // 인덱스 범위만큼 새로운 EnumSet 생성해서 반환해라 
+        enumSet = EnumSet.range(Day.TUSEDAY, Day.FRIDAY);
+        System.out.println(enumSet);
+
+        // 인덱스 순서에 맞게 구현하지 않으면, 에러가 발생한다. 
+        // enumSet = EnumSet.range(Day.FRIDAY, Day.TUSEDAY);
+        // System.out.println(enumSet);        
+    }
+}
+```
+* copyOf(EnumSet s)   
+    - 매개변수로 들어온 EnumSet 을 복사한다.   
+* noneOf(Class elementType)   
+    - 빈, EnumSet 을 반환한다.    
+* of (E e1, E e2)    
+    - 열거형 상수 2개를 입력받아 새로운 EnumSet에 넣어 반환한다.   
+* complementOf(EnumSet s)    
+    - 매개변수에 들어온 EnumSet 의 열거형 상수들을 제외한 열거형 상수들을 새로운 EnumSet 에 넣어 반환한다.   
+* range(E from, E to)    
+    - 인자로 받은 열거형 상수 사이의 범위를 인덱스의 순서대로 새로운 EnumSet에 넣어 반환한다. 단, 앞선 매개변수의 인덱스가 빠르면 런타임에 에러가 난다.   
+
 
 ### EnumMap   
 
@@ -759,6 +807,119 @@ Map<EnumKey, V> m = Collections.synchronizedMap<new EnumMap<EnumKey, V> (...));
     - 이 Map 에 포함된 값의 Collection 뷰를 반환한다. Collection 의 iterator 는 해당 key 가 map 에 나타나는 순서대로 값을 반환한다. 이는 자연스러운 순서( 열거형 상수가 선언된 순서) 이다.    
 * public Set<Map.Entry<K,V> entrySet()   
     - 이 Map 에 포함된 매핑의 Set 뷰를 반환한다. 반환된 집합은 Map.keySet() 에 설명된 일반 계약을 따른다. Set 의 iterator 는 해당 키가 맵에 나타나는 순서대로 매핑을 반환한다. 이는 자연스러운 순서(열거형 상수가 선언된 순서) 이다.   
+
+
+```java
+public class EnumMapExample {
+    public enum GFG {
+        CODE, CONTRIBUTE, QUIZ, MCQ;
+    }
+
+    public static void main(String[] args) {
+        EnumMap<GFG, String> testMap = new EnumMap<GFG, String>(GFG.class);
+
+        testMap.put(GFG.CODE, "start Coding with gfg");
+        testMap.put(GFG.CODE, "Coding with gfg");   // 똑같은 key가 들어올 수 있고 후자가 앞에 것을 덮어쓴다. 
+        testMap.put(GFG.CONTRIBUTE, "contribute for others");
+        testMap.put(GFG.QUIZ, "practice Quizes");
+        testMap.put(GFG.MCQ, "Test Speed with Mcqs");
+        // enumMap 의 사이즈 출력 
+        System.out.println("Size of EnumMap in java : " + testMap.size());
+
+        // enumMap 의 내용물 출력, toString 오버라이딩 되어있다. 
+        System.out.println("EnumMap : " + testMap);
+
+        // get(enum상수)를 통해 value 를 얻어온다. 
+        System.out.println("key : " + GFG.CODE + " value : " + testMap.get(GFG.CODE));
+
+        // EnumMap 안에 특정 key 가 포함되었는지 파악한다.
+        System.out.println("Does testMap has " + GFG.CONTRIBUTE + " : " + testMap.containsKey(GFG.CONTRIBUTE));
+
+        // EnumMap 안에 특정 Value 가 포함되었는지 파악한다. 
+        System.out.println("Does testMap has : " + GFG.QUIZ + " : " + testMap.containsValue("Practice Quizes"));
+        System.out.println("Does testMap has : " + GFG.QUIZ + " : " + testMap.containsValue(null));
+        
+        EnumMap<GFG, String> testMap2 = new EnumMap<GFG, String>(GFG.class);
+
+        // 이미 정의된 EnumMap 을 받는다
+        testMap2.putAll(testMap);
+        System.out.println(testMap2);
+
+        // 특정 키의 값을 바꾼다 
+        testMap2.replace(GFG.MCQ, "replace");
+        System.out.println(testMap2);
+
+        // 특정 키의 값이 주어진 값과 맞다면 다른 값으로 바꾼다 
+        testMap2.replace(GFG.MCQ, "replace", "oneMoreTime");
+        System.out.println(testMap2);
+
+        // 특정 키의 값이 같지 않기 때문에 바뀌지 않는다
+        testMap2.replace(GFG.MCQ, "onetwoMoreTime", "end");
+        System.out.println(testMap2);
+    }
+}
+```
+
+* put(k key, v value)   
+    - key 값과 Value 값을 받아 내부 배열에 저장한다.    
+* putAll(Map<? extends K, ? extends V> m)    
+    - 이미 생성된 적 있는 Map 객체를 내부 배열에 저장한다.   
+* size()    
+    - EnumMap 의 key 와 value 쌍의 갯수를 반환한다.    
+* get(Object key)    
+    - key 를 통해서 value 쌍의 갯수를 반환한다.    
+* containsKey(Object key)    
+    - EnumMap 에 특정 key 가 존재하는지 확인 후 boolean 을 반환한다.   
+* containsValue(Object value)   
+    - EnumMap 에 특정 value 값이 존재하는지 확인 후 boolean 을 반환한다.   
+* replace(K key, V value)   
+    - 기존 key 에 있던 value 값을 바꾼다.   
+* replace(K key, V oldValue, V newValue)    
+    - 안정성을 보장해주는 방법으로 key 의 어떤 value 값이 맞으면 현재값으로 변경해준다.   
+
+### Enum 싱글톤   
+```
+enum 의 문법적 특성을 이용한 싱글톤 객체 생성    
+```
+
+```java 
+package SingleTone;
+
+public enum EnumSettings {
+    INSTANCE;   // 생성자이자 식별자를 의미 -> 밑에 정의된 생성자에 파라미터가 있다면 여기에도 인수 넣어줘야 한다.
+                // 식별자라고 말을 한 것은 해당 문구를 기준으로 객체를 참조하기에 싱글톤 기준이 된다.
+
+    private boolean darkMode = false;   // 디폴트 값 
+    private int fontSize = 13;  // 디폴트 값 
+
+    private EnumSettings() {}   // 생성자 
+
+    public EnumSettings getInstance() {
+        return INSTANCE;
+    }
+
+    public boolean getDarkMode() {
+        return darkMode;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        this.darkMode = darkMode;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+}
+```
+#### 장점 
+* 싱글톤의 특징 (단 한 번의 인스턴스 호출, Thread 간 동기화) 를 가지며 비교적 간편하게 사용할 수 있는 방법이다.   
+* 단 한번의 인스턴스 생성을 보장하며 사용이 간편하고 직렬화가 자동으로 처리되고 직렬화가 아무리 복잡하게 이루어져도 여러 객체가 생길 일이 없다.   
+* 리플렉션을 통해 싱글톤을 깨트릴 수 없다.   
+
 
 
 출처 : https://parkadd.tistory.com/50
