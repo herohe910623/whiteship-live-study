@@ -604,7 +604,7 @@ public abstract class AbstractProcessor implements Processor {
 ### 애노테이션 프로세서 3   
 
 애노테이션 프로세서를 한번 만들어 보겠습니다.   
-<img width="500" src="./IMG/IMG_010annotation.png">   
+<img width="500" src="./IMG/IMG_010annotation.PNG">   
 먼저 해당 구조로 프로젝트를 하나 생성해줍니다. 생성해야할 파일은 패키지와 자바 파일, 그리고 META-INF/services 폴더와 
 javax.annotation.processing.Processor 텍스트파일 입니다.   
 
@@ -643,9 +643,9 @@ public class AnnotationProcessor extends AbstractProcessor {
 <img width="500" src="./IMG/IMG_011annotation.png">   
 하단의 jar 파일 이름과 경로를 지정해준 뒤 finish 를 눌러줍니다.   
 그러면 아래와 같은 jar 파일이 해당경로에 생기게 될겁니다.   
-<img width="100" src="./IMG/IMG_012annotation.png">   
+<img width="100" src="./IMG/IMG_012annotation.PNG">   
 이제 이 jar파일을 놔두고 다시 이클립스로 돌아가서 하나의 프로젝트를 더 만들어 줍니다.   
-<img width="500" src="./IMG/IMG_013annotation.png">    
+<img width="500" src="./IMG/IMG_013annotation.PNG">    
 
 ```java 
 package com.test;
@@ -659,16 +659,16 @@ public class AnnotationTest {
 ```
 이 jar 파일을 사용할 프로젝트로 간단하게 자바파일 하나만 생성해준 뒤에 위 코드를 넣어줍니다.   
 이제 코드도 만들었으니 이 프로젝트의 Annotation Processing 을 설정해보도록 하겠습니다.   
-<img width="500" src="./IMG/IMG_014annotation.png">    
+<img width="500" src="./IMG/IMG_014annotation.PNG">    
 먼저 프로젝트 우측클릭 > properties > java Compiler > Annotation Processing 을 클릭해줍니다.   
-<img width="500" src="./IMG/IMG_015annotation.png">    
+<img width="500" src="./IMG/IMG_015annotation.PNG">    
 그리고 상단에 있는 Enable project specific settings 와 Enable processing in editor 에 체크를 넣어줍니다.   
 <img width="500" src="./IMG/IMG_016annotation.png">    
 다음으로 Annotation Processing 하단에 있는 Factory Path를 누른 뒤 Enable Project specific settings 를 클릭한 뒤 아까 만든 jar 파일을 
 Add External JARs 를 통해 추가해줍니다.   
 
 이제 해당설정을 적용한 뒤에 AnnotationClient 프로젝트에서 만든 java를 다시 저장하게 되면 Error Log View 에 다음과 같은 문구가 찍히는 것을 확인할 수 있습니다.   
-<img width="500" src="./IMG/IMG_017annotation.png">   
+<img width="500" src="./IMG/IMG_017annotation.PNG">   
 
 컴파일 단계에서 우리가 만들었던 process() 함수의 내용이 찍히는 것을 확인할 수 있습니다.   
 
