@@ -71,7 +71,85 @@ read() 의 반환타입이 byte가 아닌 int 인 이유는 read() 의 반환값
 * read() 와 write(int b) 를 제외한 나머지 *나머지 메서드들은 추상메서드가 아니니까* 굳이 추상메서드인 read()와 write(int b) 를 구현하지 않아도 이들을 사용하면 될 것이라 생각할 수 있겠지만,    
 * 사실 추상메서드인 read() 와 write(int b) 를 *이용해서 구현한 것들임으로* read() 와 write(int b)가 구현되어 있지 않으면 이들은 아무런 의미가 없다.    
 
+InputStream 의 실제 코드 일부분   
+```java 
+public abstract class InputStream {
+    ...
+    // 입력스트림으로 부터 1byte 를 읽어서 반환한다. 읽을 수 없다면 -1 을 반환한다.   
+    abstract int read();
 
+    // 입력스트림으로부터 len 개의 byte 를 읽어서 byte 배열 b의 off 위치까지 저장한다.   
+    int read(byte[] b, int off, int len) {
+        ...
+        for(int i=off ; i < off+len ; i++) {
+            // read() 를 호출해서 데이터를 읽어서 배열을 채운다.   
+            b[i] = (byte)read();
+        }
+        ...
+
+        // 입력스트림으로부터 byte 배열 b 의 크기만큼 데이터를 읽어서 배열 b 에 저장한다. 
+        int read(byte[] b) {
+            return read(b, 0, b.length);
+        }
+    }
+    ...
+}
+```
+*read(byte[] b, int off, int len)* 코드를 보면 read() 를 호출하고 있음을 볼 수 있다.   
+read() 가 추상메서드 이지만, 이처럼 *read(byte[] b, int off, int len)* 의 내에서 read() 를 호출할 수 있다.   
+
+*read(byte[] b)* 도 read(byte[] b, int off, int len)을 호출하지만, read(byte[] b, int off, int len) 가 다시 추상메서드 read() 를 호출하기 때문에 *read(bytep[] b)*도 추상메서드 read()를 호출한다고 할 수 있다.   
+
+*결론적으로, read() 는 반드시 구현되어야 하는 핵심적인 메서드이고,* read() 없이는 read(byte[] b, int off, int len)과 read(byte[] b)는 의미가 없다.   
+
+### 보조스트림   
+스트림의 기능을 보완하기 위해 보조스트림 이라는 것이 제공된다.   
+보조스트림은 *실제 데이터를 주고 받는 스트림이 아니기 때문에 데이터를 입출력할 수 있는 기능은 없지만*, 스트림의 **기능을 향상** 시키거나 **새로운 기능을 추가**할 수 있다.     
+즉, 스트림을 먼저 생성한 다음에 이를 이용해 보조스트림을 생성해서 활용한다.   
+
+#### Buffer 를 사용하면 좋은 이유에 대한 근본적인 이유를 고민해야 한다.   
+```
+Buffer 를 사용하면 좋은 이유  
+차이점과 성능상의 장점이 있는지에 대한 이유가 중요 
+```
+**속도가 왜 빨라질까?**   
+* 모아서 보내면 빨라질까?   
+* 한 바이트씩 바로바로 보내는 것이 아니라 버퍼에 담았다가 한번에 모아서 보내는 방법인데 왜 이렇게 하는 것이 더 빨라질까?   
+* 입출력 횟수가 포인트 이다.   
+* 단순히 모아서 보낸다고 이점이 있는 것이 아니다 -> *시스템 콜의 횟수가 줄어들었기 때문에 성능상 이점이 생기는 것이다.*   
+* **OS 레벨에 있는 시스템 콜의 횟수 자체를 줄이기 때문에 성능이 빨라지는 것이다.**   
+
+**물을 떠와라 -> 물을 한 모금 씩 떠와라**   
+* 매번 한모금 먹고 주방 갔다오고 또 먹고 갔다오고 반복..  
+
+**물을 떠와라 -> 물을 한 컵씩 떠와라**   
+* 한 컵이 다 마실 때 까지 물을 마실 수 있다.   
+
+동일한 양의 물을 마신다고 했을 때 한모금 씩 떠와서 마시는 것과 한 컵씩 떠와서 마시는 것의 차이는 ?? -> 시간이 줄어들 것이다.   
+
+예시로 test.txt라는 파일을 읽기 위해 FileInputStream 을 사용할 때, 입력 성능을 향상 시키기 위해 버퍼를 사용하는 보조스트림인 BufferedInputStream 을 사용할 수 있다.   
+```java
+// 먼저 기반 스트림을 생성한다.  
+FileInputStream fileInputStream = new FileInputStream("test.txt");
+
+// 기반 스트림을 이용해 보조 스트림을 생성한다. 
+BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+
+// Buffered**Stream 생성 시 사이즈도 정의하여 생성할 수 있다. (2번째 파라미터)
+// default : 8192 
+BufferedInputStream bis = new BufferedInputStream(fileInputStream, 8192);
+
+// 보조스트림을 이용해 데이터를 읽는다. 
+bufferedInputStream.read();
+```
+ 
+ 코드만 보았을 때 보조스트림인 BufferedInputStream 이 입력 기능을 수행하는 것 처럼 보이지만, 실제 입력 기능은 BufferedInputStream 과 연결된 FileInputStream 이 수행한다.   
+ ```java
+BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+ ```
+* BufferedInputStream 은 버퍼만 제공한다. 버퍼를 사용한 입출력과 사용하지 않은 입출력은 성능상 상당한 차이가 나기 떄문에 대부분 버퍼를 이용한 보조스트림을 사용하게 된다.   
+
+보조스트림 그 자체로 존재하는 것이 아니라 부모/자식 관계를 이루고 있는 것임으로, 보조스트림 역시 부모의 입출력 방법과 같다.   
 
 
 
