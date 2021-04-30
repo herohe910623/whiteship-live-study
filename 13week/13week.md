@@ -67,9 +67,9 @@ read() 의 반환타입이 byte가 아닌 int 인 이유는 read() 의 반환값
 ```
 
 위 Input,OutputStream 의 메서드 사용법만 잘 알고 있다면, 데이터를 읽고 쓰는 것은 대상의 종류에 관계 없이 간단한 일이 될 것이다.   
-* InputStream 의 read() 와 OutputStream 의 write(int b) 는 입출력의 대상에 따라 읽고 쓰는 방법이 다를 것이기 때문에, 각 상황에 알맞게 구현하라는 의미의 추상 메서드로 정의되어 있다.    
+* **InputStream** 의 **read() 와 OutputStream 의 write(int b)** 는 입출력의 대상에 따라 읽고 쓰는 방법이 다를 것이기 때문에, 각 상황에 알맞게 구현하라는 의미의 추상 메서드로 정의되어 있다.    
 * read() 와 write(int b) 를 제외한 나머지 *나머지 메서드들은 추상메서드가 아니니까* 굳이 추상메서드인 read()와 write(int b) 를 구현하지 않아도 이들을 사용하면 될 것이라 생각할 수 있겠지만,    
-* 사실 추상메서드인 read() 와 write(int b) 를 이용해서 구현한 것들임으로 read() 와 write(int b)가 구현되어 있지 않으면 이들은 아무런 의미가 없다.    
+* 사실 추상메서드인 read() 와 write(int b) 를 *이용해서 구현한 것들임으로* read() 와 write(int b)가 구현되어 있지 않으면 이들은 아무런 의미가 없다.    
 
 
 
