@@ -340,9 +340,7 @@ InputStream 과 OutputStream 은 모든 바이트기반 스트림의 조상이�
 |int available()|스트림으로부터 읽어올 수 있는 데이터의 크기를 반환|
 |void close()|닫음으로써 사용하고 있던 자원을 반환|
 |void mark(int readlimit)|현재 위치를 표시해 놓는다.   후에 reset()에 의해서 표시해놓은 위치로 다시 돌아갈 수 있다.   readlimit 는 되돌아갈 수 있는 byte 의 수이다.|
-|abstract int read()|1byte를 읽어온다.(0~255사이의 값.)   
-더이상 읽어올 값이 없으면  -1을 반환한다.   
-abstract 추상 메서드임으로 InputStream 의 자손들은 자신의 상황에 알맞게 구현해야 한다.|
+|abstract int read()|1byte를 읽어온다.(0~255사이의 값.)   더이상 읽어올 값이 없으면  -1을 반환한다.   abstract 추상 메서드임으로 InputStream 의 자손들은 자신의 상황에 알맞게 구현해야 한다.|
 
 
 
