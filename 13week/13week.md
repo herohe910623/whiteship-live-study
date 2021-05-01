@@ -150,6 +150,160 @@ BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStrea
 * BufferedInputStream 은 버퍼만 제공한다. 버퍼를 사용한 입출력과 사용하지 않은 입출력은 성능상 상당한 차이가 나기 떄문에 대부분 버퍼를 이용한 보조스트림을 사용하게 된다.   
 
 보조스트림 그 자체로 존재하는 것이 아니라 부모/자식 관계를 이루고 있는 것임으로, 보조스트림 역시 부모의 입출력 방법과 같다.   
+<img width="500" src="./IMG/IMG_002io.png">    
+
+보조스트림을 이용해 조립하는 것이 가능하다.   
+**데코레이터 패턴**
+참조:https://alkhwa-113.tistory.com/entry/IO   
+#### java.io - 데코레이터 패턴   
+```
+자기자신의 타입을 감싸는 패턴이라고 보면 된다.    
+
+데코레이터 패턴 
+ 객체에 추가적인 요건을 동적으로 첨가한다. 데코레이터는 서브클래스를 만드는 것을 통해서 기능을 유연하게 확장할 수 있는 방법을 제공한다. 
+```
+* java.io 패키지는 데코레이터 패턴으로 만들어졌다.   
+* 데코레이터 패턴이란, A 클래스에서 B 클래스를 생성자로 받아와서, B 클래스에 추가적인 기능을 덧붙여서 제공하는 패턴이다.   
+<img width="500" src="./IMG/IMG_003io.png">    
+* BufferedReader 는 Reader 의 하위 클래스중 하나를 받아와서, 버퍼를 이용한 기능을 추가한 기능을 제공한다.   
+* BufferedReader 처럼 출력을 담당하는 래퍼 클래스는 출력을 하는 주체가 아니라 도와주는 역할이다.   
+* Stream 을 사용한 클래스들에서 이렇게 도와주는 클래스들을 보조스트림 이라 한다.   
+
+### 보조스트림의 종류   
+|입력|출력|설명|
+|-------|-------|----------|
+|FilterInputStream|FilterOutputStream|필터를 이용한 입출력 처리|
+|BufferedInputStream|BufferedOutputStream|버퍼를 이용한 입출력 성능향상|
+|DataInputStream|DataOutputStream|int,float 와 같은 primitive Type 으로 데이터를 처리하는 기능|
+|SequenceInputStream|없음.|두 개의 스트림을 하나로 연결|
+|LineNumberInputStream|없음.|읽어온 데이터의 라인번호를 카운트(jdk1.1부터 LineNumberReader로 대체)|
+|ObjectInputStream|ObjectOutputStream|데이터를 객체단위로 읽고 쓰는데 사용 주로 파일을 이용하며 객체 직렬화와 관련|
+|없음.|PrintStream|버퍼를 이용하며,추가적인 print관련 기능 (print,printf,println 메서드)|
+|PushbackInputStream|없음.|버퍼를 이용해서 읽어온 데이터를 다시 되돌리는 기능 (unread,push back to buffer)|
+개수 9   
+
+지금까지 알아본 스트림은 모두 바이트 기반의 스트림이다.   
+*바이트기반이라 하는 것은 입출력의 단위가 1byte 라는 의미이다.*   
+그러나     
+    **Java 에서는 한 문자를 의미하는 char 형이 1byte가 아니라 2byte 이기 때문에 바이트기반의 스트림으로 2byte인 문자를 처리하는데에 어려움이 있다.**   
+
+### 문자기반 스트림 - Reader, Write   
+
+바이트기반의 입출력 스트림의 단점(1byte -> 2byte)을 보완하기 위해 문자기반의 스트림을 제공한다.   
+문자데이터를 입출력할 때는 바이트기반 스트림 대신 문자 기반 스트림을 사용하도록 하자.   
+
+**InputStream -> Reader**    
+**OutputStream -> Writer**   
+
+#### 바이트기반과 문자기반 스트림의 비교   
+|바이트기반 스트림|문자기반스트림|
+|--------|--------|
+|FileInputStream|FileReader|
+|FileOutputStream|FileWriter|
+|ByteArrayInputStream|CharArrayReader|
+|ByteArrayOutputStream|CharArrayWriter|
+|PipedInputStream|PipedReader|
+|PipedOutputStream|PipedWriter|
+|StringBufferedInputStream(deprecated)|StringReader|
+|StringBufferedOutputStream(deprecated)|StringWriter|   
+
+```
+StringBufferInputStream, StringBufferOutputStream 은 StringReader 와 StringWriter 로 대체되어 더이상 사용하지 않는다. -> deprecated
+```
+네이밍 규칙만 보면 문자기반 스트림의 네이밍 중 InputStream 은 Reader로, OutputStream은 Writer로 바꾸면 된다.   
+
+단,ByteArrayInputStream 에 대응하는 문자기반 스트림은 char 배열을 사용하는 CharArrayReader 이다.   
+이와 같은 맥락으로 byte 배열 대신 char 배열을 사용한다는 것과 추상메서드가 달라졌다.   
+이름만 다소 다를 뿐 활용 방법은 동일하다고 보면 된다.   
+
+#### InputStream 과 Reader    
+|InputStream|Reader|
+|--------|--------|
+|abstract int read()|int read()|
+|int read(byte[] b)|int read(char[] cbuf)|
+|int read(byte[] b, int off, int len)|abstract int read(char[] cbuf, int off, int len)|
+
+#### OutputStream 과 Writer    
+|OutputStream|Writer|
+|--------|--------|
+|abstract void write(int b)|void writer(int c)|
+|void write(byte[] b)|void write(char[] cbuf)|
+|void write(byte[] b, int off, int len)|abstract void write(char[] cbuf, int off, int len)|
+|   |void write(String str)|
+|   |void write(String str, int off, int len)|
+개수 5    
+```
+보조스트림 역시 문자기반 보조스트림이 존재하며 사용목적과 방식은 바이트 기반 보조스트림과 같다. 
+```
+
+### NIO(New Input/Output)    
+
+의미 그대로 새로운 입출력이라는 의미를 가진다.   
+기존 IO의 단점을 개선하기 위해 java 4 부터 추가된 패키지이다. (java.io)   
+
+#### NIO Package   
+|NIO패키지|포함되어 있는 내용|
+|--------|----------|
+|java.nio|다양한 버퍼 클래스|
+|java.nio.channels|파일 채널, TCP 채널, UDP 채널 등의 클래스|
+|java.nio.channels.spi|java.nio.channels 패키지를 위한 서비스 제공자 클래스|
+|java.nio.charset|문자셋,인코더,디코더 API|
+|java.nio.charset.spi|java.nio.charset 패키지를 위한 서비스 제공자 클래스|
+|java.nio.file|파일 및 파일 시스템에 접근하기 위한 클래스|
+|java.nio.file.attribute|파일 및 파일 시스템의 속성에 접근하기 위한 클래스|
+|java.nio.file.spi|java.nio.file 패키지를 위한 서비스 제공자 클래스|
+개수 8   
+
+#### IO 와 NIO 의 차이점   
+IO와 NIO 는 데이터를 입출력한다는 목적은 동일하지만, 방식에서 큰 차이가 나타난다.   
+|구분|IO|NIO|
+|------|------|------|
+|입출력 방식|스트림 방식|채널 방식|
+|버퍼 방식|넌버퍼(Non-buffer)|버퍼(buffer)|
+|비동기 방식|지원 안함|지원|
+|블로킹/넌블로킹 방식|블로킹 방식만 지원(동기)|블로킹/넌블로킹 방식 모두 지원(동기/비동기 모두 지원)|
+개수 5   
+
+#### 스트림과 채널(Stream vs Channel)   
+**IO는 스트림(Stream) 기반이다.**   
+    스트림은 입력 스트림과 출력 스트림으로 구분되어 있기 때문에 데이터를 읽기 위해서는 입력 스트림을 생성해야 하고, 
+    데이터를 출력하기 위해서는 출력 스트림을 생성해야 한다.   
+**NIO는 채널(Channel) 기반이다.**   
+    채널은 스트림과 달리 양방향으로 입력과 출력이 가능하다.   
+    그렇기 때문에 입력과 출력을 위한 별도의 채널을 만들 필요가 없다.   
+
+#### 넌버퍼와 버퍼(non-buffer vs buffer)   
+IO 에서는 출력 스트림이 1바이트를 쓰면 입력 스트림이 1바이트를 읽는다.   
+이러한 시스템은 대체로 느리다.   
+
+이것보다 **버퍼(Buffer : 메모리 저장소)**를 사용해서 복수 개의 바이트를 한꺼번에 입력받고 출력하는 것이 성능에 이점을 가지게 된다.   
+
+그래서 IO는 버퍼를 제공해주는 보조 스트림인 BufferedInputStream, BufferedOutputStream 을 연결해 사용하기도 한다.   
+
+NIO 는 기본적으로 버퍼를 사용해서 입출력을 하기 떄문에 IO 보다 높은 성능을 가진다.   
+
+<img width="500" src="./IMG/IMG_004io.png">    
+**IO 는 스트림에서 읽은 데이터를 즉시 처리한다.**   
+* 스트림으로부터 입력된 전체 데이터를 별도로 저장하지 않으면, 입력된 데이터의 위치를 이동해 가면서 자유롭게 이용할 수 없다.   
+**NIO 는 읽은 데이터를 무조건 버퍼에 저장한다.**   
+* 버퍼 내에서 데이터의 위치 이동을 해가면서 필요한 부분만 읽고 쓸 수 있다.    
+
+#### 블로킹과 넌블로킹(Blocking vs non-blocking)   
+**IO는 블로킹(Blocking) 된다.**   
+    입력 스트림의 read() 메서드를 호출하면 데이터가 입력되기 전까지 Thread는 블로킹(대기상태)가 된다.   
+    마찬가지고 출력 스트림의 write() 메서드를 호출하면 데이터가 출력되기 전까지 Thread는 블로킹된다.   
+    IO Thread 가 블로킹되면 다른 일을 할 수 없고 블로킹을 빠져나오기 위해 인터럽트(interrupt)도 할 수 없다.   
+    -> 블로킹을 빠져나오는 유일한 방법은 스트림을 닫는것이다.   
+
+**NIO는 블로킹과 넌블로킹(non-blocking) 특징을 모두 가진다.**   
+    IO블로킹과 NIO블로킹과의 차이점은 NIO 블로킹은 Thread 를 인터럽트(interrupt) 함으로써 빠져나올 수 있다.   
+    블로킹의 반대개념이 넌블로킹인데, 입출력 작업 시 Thread가 블로킹되지 않는 것을 말한다.   
+    NIO의 넌블로킹은 입출력 작업 준비가 완료된 채널만 선택해서 작업 Thread가 처리하기 떄문에 작업 Thread가 블로킹되지 않는다.   
+    -> 작업준비가 완료되었다는 뜻은 지금 바로 읽고 쓸수 있는 상태를 말한다.   
+
+    NIO 넌블로킹의 핵심 객체는 멀티플렉서(multiplexor)인 셀렉터(Selector) 이다.   
+    셀렉터는 복수 개의 채널 중에서 준비 완료된 채널을 선택하는 방법을 제공해준다.   
+
 
 
 
