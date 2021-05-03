@@ -335,12 +335,102 @@ NIO 는 기본적으로 버퍼를 사용해서 입출력을 하기 떄문에 IO 
 #### InputStream 과 OutputStream   
 InputStream 과 OutputStream 은 모든 바이트기반 스트림의 조상이다.   
 
+**InputStream의 메서드**   
 |메서드명|설명|
 |----------|----------|
 |int available()|스트림으로부터 읽어올 수 있는 데이터의 크기를 반환|
 |void close()|닫음으로써 사용하고 있던 자원을 반환|
 |void mark(int readlimit)|현재 위치를 표시해 놓는다.   후에 reset()에 의해서 표시해놓은 위치로 다시 돌아갈 수 있다.   readlimit 는 되돌아갈 수 있는 byte 의 수이다.|
 |abstract int read()|1byte를 읽어온다.(0~255사이의 값.)   더이상 읽어올 값이 없으면  -1을 반환한다.   abstract 추상 메서드임으로 InputStream 의 자손들은 자신의 상황에 알맞게 구현해야 한다.|
+|int read(byte[] b)|배열 b의 크기만큼 읽어서 배열을 채우고 읽어 온 데이터의 수를 반환한다. 반환하는 값은 항상 배열의 크기보다 작거나 같다.|
+|int read(byte[] b,int off,int len)|최대 len개의 byte를 읽어서, 배열 b의 지정된 위치(off)부터 저장 한다. 실제로 읽어 올 수 있는 데이터가 len 개 보다 적을 수 있다.|
+|void read()|스트림에서의 위치를 마지막으로 mark()이 호출되었던 위치로 되돌린다.|
+|long skip(long n)|스트림에서 주어진 길이(n) 만큼 건너뛴다.|
+개수 8   
+
+**OutputStream의 메서드**   
+|메서드명|설명|
+|----------|----------|
+|void close()|입력소스를 닫음으로써 사용하고 있던 자원을 반납|
+|void flush()|스트림의 버퍼에 있는 모든 내용을 출력소스에 쓴다|
+|abstract void write(int b)|주어진 값을 출력소스에 쓴다.|
+|void wirte(byte[] b)|주어진 배열 b에 저장된 모든 내용을 출력소스에 쓴다.|
+|void write(byte[] b,int off,int len)|주어진 배열 b에 저장된 내용 중에서 off번째부터 len개 만큼만 읽어서 출력소스에 쓴다.|
+개수 5    
+
+이미 읽은 데이터를 되돌려서 다시 읽을 수 있는 방법   
+**-> mark(), reset()**   
+```
+mark 와 reset 기능을 제공하는 스트림인지 확인하는 방법 
+ -> markSupported();
+```
+
+버퍼가 있는 출력스트림이 있는 경우 flush()를 이용해 버퍼에 있는 모든 내용을 출력소스에 쓴다.   
+-> **버퍼가 있는 출력스트림**에만 의미가 있으며, OutputStream에 정의된 flush()는 의미 없다.   
+
+**close()**   
+프로그램이 종료될 때 사용하고 닫지 않은 스트림을 JVM이 자동적으로 닫아주기는 하지만, 스트림을 사용해서 *모든 작업을 마치고 난 후에는 close()를 호출해서 반드시 닫아주어야 한다.*   
+```
+ByteArrayInputStream과 같이 메모리를 사용하는 스트림과 
+System.in, System.out과 같은 표준 입출력 스트림은 닫아주지 않아도 된다! 
+```
+
+**ByteArrayInputStream 과 ByteArrayOutputStream**   
+ByteArrayInputStream / ByteOutputStream 은 *메모리, 즉 바이트배열에 데이터를 입출력* 하는데 사용되는 스트림이다.   
+
+주로 다른 곳에 입출력하기 전에 데이터를 임시로 바이트배열에 담아서 변환 등의 작업을 하는데 사용된다.   
+```
+스트림의 종류가 달라도 읽고 쓰는 방법은 동일함으로 스트림에 읽고 쓰는 방법을 잘 익혀두자.
+```
+
+```java
+package me.herohe.study.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("hi");
+
+        byte[] inSrc = {0,1,2,3,4,5,6,7,8,9};
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(inSrc);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        int data;
+
+        // inputStream 의 read() 메서드를 이용해 1byte 씩 읽어들이며, -1(값이 없을 때까지) 반복한다.
+        while((data = inputStream.read()) != -1) {
+            outputStream.write(data);
+        }
+
+        byte[] outSrc = outputStream.toByteArray();
+
+        System.out.println("input source : " + Arrays.toString(inSrc));
+        System.out.println("output source : " + Arrays.toString(outSrc));
+    }
+}
+```
+```
+/Library/Java/JavaVirtualMachines/jdk-11.0.8.jdk/Contents/Home/bin/java -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:62090,suspend=y,server=n -javaagent:/Users/seogijin/Library/Caches/JetBrains/IntelliJIdea2020.2/captureAgent/debugger-agent.jar -Dfile.encoding=UTF-8 -classpath /Users/seogijin/workspace/garbage/card/target/classes:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar App
+Connected to the target VM, address: '127.0.0.1:62090', transport: 'socket'
+hi
+input source : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+output source : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Disconnected from the target VM, address: '127.0.0.1:62090', transport: 'socket'
+
+Process finished with exit code 0
+```
+* 가장 기본적인 read() 와 write() 를 이용해 inSrc 에 있는 배열 값을 outSrc 에 복사하는 예제를 살펴보았다.   
+* while((data = input.read()) != -1) 코드   
+    - data = input.read() : read() 를 호출한 반환값을 변수 data 에 저장한다.    
+    - data != -1 : data 에 저장된 값이 -1 이 아닌지 비교한다.   
+
+**바이트배열은 사용하는 자원이 메모리 밖에 없으므로 <u>가비지컬렉터에 의해 자동적으로 자원을 반환함으로 close()를 이용해 스트림을 닫지 않아도 된다.</u>**    
+그러나. <u>read()와 write(int b)를 사용하기 때문에 한 번에 1 byte만 읽고 쓰므로 효율이 떨어진다.</u>   
+
 
 
 
