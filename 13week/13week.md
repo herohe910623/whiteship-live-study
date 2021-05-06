@@ -69,7 +69,7 @@ read() 의 반환타입이 byte가 아닌 int 인 이유는 read() 의 반환값
 위 Input,OutputStream 의 메서드 사용법만 잘 알고 있다면, 데이터를 읽고 쓰는 것은 대상의 종류에 관계 없이 간단한 일이 될 것이다.   
 * **InputStream** 의 **read() 와 OutputStream 의 write(int b)** 는 입출력의 대상에 따라 읽고 쓰는 방법이 다를 것이기 때문에, 각 상황에 알맞게 구현하라는 의미의 추상 메서드로 정의되어 있다.    
 * read() 와 write(int b) 를 제외한 나머지 *나머지 메서드들은 추상메서드가 아니니까* 굳이 추상메서드인 read()와 write(int b) 를 구현하지 않아도 이들을 사용하면 될 것이라 생각할 수 있겠지만,    
-* 사실 추상메서드인 read() 와 write(int b) 를 *이용해서 구현한 것들임으로* read() 와 write(int b)가 구현되어 있지 않으면 이들은 아무런 의미가 없다.    
+* 사실 추상메서드인 read() 와 write(int b) 를 **이용해서 구현한 것들임으로** read() 와 write(int b)가 구현되어 있지 않으면 이들은 아무런 의미가 없다.    
 
 InputStream 의 실제 코드 일부분   
 ```java 
@@ -95,12 +95,12 @@ public abstract class InputStream {
     ...
 }
 ```
-*read(byte[] b, int off, int len)* 코드를 보면 read() 를 호출하고 있음을 볼 수 있다.   
-read() 가 추상메서드 이지만, 이처럼 *read(byte[] b, int off, int len)* 의 내에서 read() 를 호출할 수 있다.   
+**read(byte[] b, int off, int len)** 코드를 보면 read() 를 호출하고 있음을 볼 수 있다.   
+read() 가 추상메서드 이지만, 이처럼 **read(byte[] b, int off, int len)** 의 내에서 read() 를 호출할 수 있다.   
 
-*read(byte[] b)* 도 read(byte[] b, int off, int len)을 호출하지만, read(byte[] b, int off, int len) 가 다시 추상메서드 read() 를 호출하기 때문에 *read(bytep[] b)*도 추상메서드 read()를 호출한다고 할 수 있다.   
+**read(byte[] b)** 도 read(byte[] b, int off, int len)을 호출하지만, read(byte[] b, int off, int len) 가 다시 추상메서드 read() 를 호출하기 때문에 **read(bytep[] b)** 도 추상메서드 read()를 호출한다고 할 수 있다.   
 
-*결론적으로, read() 는 반드시 구현되어야 하는 핵심적인 메서드이고,* read() 없이는 read(byte[] b, int off, int len)과 read(byte[] b)는 의미가 없다.   
+**결론적으로, read() 는 반드시 구현되어야 하는 핵심적인 메서드이고,** read() 없이는 read(byte[] b, int off, int len)과 read(byte[] b)는 의미가 없다.   
 
 ### 보조스트림   
 스트림의 기능을 보완하기 위해 보조스트림 이라는 것이 제공된다.   
@@ -116,7 +116,7 @@ Buffer 를 사용하면 좋은 이유
 * 모아서 보내면 빨라질까?   
 * 한 바이트씩 바로바로 보내는 것이 아니라 버퍼에 담았다가 한번에 모아서 보내는 방법인데 왜 이렇게 하는 것이 더 빨라질까?   
 * 입출력 횟수가 포인트 이다.   
-* 단순히 모아서 보낸다고 이점이 있는 것이 아니다 -> *시스템 콜의 횟수가 줄어들었기 때문에 성능상 이점이 생기는 것이다.*   
+* 단순히 모아서 보낸다고 이점이 있는 것이 아니다 -> **시스템 콜의 횟수가 줄어들었기 때문에 성능상 이점이 생기는 것이다.**   
 * **OS 레벨에 있는 시스템 콜의 횟수 자체를 줄이기 때문에 성능이 빨라지는 것이다.**   
 
 **물을 떠와라 -> 물을 한 모금 씩 떠와라**   
@@ -317,7 +317,7 @@ NIO 는 기본적으로 버퍼를 사용해서 입출력을 하기 떄문에 IO 
 
 위의 I/O 프로세스에서 첫번째 문제는 3) 의 과정이 너무나 비효율적이라는 것이다. 왜냐하면 커널안의 버퍼 데이터를 프로세스 안으로 다시 복사하기 때문이다.   
 
-그렇다면 만약 3)의 과정을 없애고 *커널영역에 바로 접근 할 수 있다면 어떻게 될까? 만약 이게 가능하다면 우리는 버퍼를 복사하는 CPU 를 낭비하지도, GC 관리를 따로 하지 않아도 I/O를 사용*할 수 있게 된다.   
+그렇다면 만약 3)의 과정을 없애고 **커널영역에 바로 접근 할 수 있다면 어떻게 될까? 만약 이게 가능하다면 우리는 버퍼를 복사하는 CPU 를 낭비하지도, GC 관리를 따로 하지 않아도 I/O를 사용**할 수 있게 된다.   
 
 #### 커널 Buffer   
 <img width="500" src="./IMG/IMG_006io.png">    
@@ -369,14 +369,14 @@ mark 와 reset 기능을 제공하는 스트림인지 확인하는 방법
 -> **버퍼가 있는 출력스트림**에만 의미가 있으며, OutputStream에 정의된 flush()는 의미 없다.   
 
 **close()**   
-프로그램이 종료될 때 사용하고 닫지 않은 스트림을 JVM이 자동적으로 닫아주기는 하지만, 스트림을 사용해서 *모든 작업을 마치고 난 후에는 close()를 호출해서 반드시 닫아주어야 한다.*   
+프로그램이 종료될 때 사용하고 닫지 않은 스트림을 JVM이 자동적으로 닫아주기는 하지만, 스트림을 사용해서 **모든 작업을 마치고 난 후에는 close()를 호출해서 반드시 닫아주어야 한다.**   
 ```
 ByteArrayInputStream과 같이 메모리를 사용하는 스트림과 
 System.in, System.out과 같은 표준 입출력 스트림은 닫아주지 않아도 된다! 
 ```
 
 **ByteArrayInputStream 과 ByteArrayOutputStream**   
-ByteArrayInputStream / ByteOutputStream 은 *메모리, 즉 바이트배열에 데이터를 입출력* 하는데 사용되는 스트림이다.   
+ByteArrayInputStream / ByteOutputStream 은 **메모리, 즉 바이트배열에 데이터를 입출력** 하는데 사용되는 스트림이다.   
 
 주로 다른 곳에 입출력하기 전에 데이터를 임시로 바이트배열에 담아서 변환 등의 작업을 하는데 사용된다.   
 ```
